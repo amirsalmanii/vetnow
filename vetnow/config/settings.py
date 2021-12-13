@@ -21,7 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # local
-    'accounts',
+    'accounts.apps.AccountsConfig',
+    'otp.apps.OtpConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken'
@@ -38,6 +39,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+API_KEY = '5572377A334659594D423761524353454257314F705250687168714F7A7A6E4C773432756E424E553633303D'
 
 TEMPLATES = [
     {
@@ -101,6 +103,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -116,3 +123,5 @@ AUTH_USER_MODEL = 'accounts.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
