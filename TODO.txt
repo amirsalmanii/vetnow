@@ -1,2 +1,5 @@
 [x]-create-custom-user
 [x]-login-with-otp
+[x]-create-product
+[x]-model-product
+[]-add image to model & thumnail image
