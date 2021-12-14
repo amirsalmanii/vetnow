@@ -6,6 +6,9 @@ from io import BytesIO
 from PIL import Image
 import os
 from django.core.files.base import ContentFile
+from django.urls import reverse
+
+from .managers import ProductExistManager
 THUMB_SIZE = (400, 400)
 
 
@@ -17,19 +20,34 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('product:category_products', args=[self.slug])
+
 
 def get_filename_ext(FilePath):
+    """
+    this function get file path of images and thumbnail and split base filepath and ext
+    like:
+    iphone12.jpg --> iphone12 | jpg
+    """
     base_name = os.path.basename(FilePath)
     name, ext = os.path.splitext(base_name)
     return name, ext
 
 
+# This datas is for the bottom two functions
 new_name = randrange(1000, 9999)
 data_now = str(date.today())
 datem = datetime.strptime(data_now, "%Y-%m-%d")
 
 
 def upload_image_path(instance, file_name):
+    """
+    get file name from form and give that to get_filename_ext for split name and ext
+    then
+    change name file with random numbers like --> you.jpg --> 22.jpg
+    and save in return path.
+    """
     y, m = datem.year, datem.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
@@ -37,6 +55,12 @@ def upload_image_path(instance, file_name):
 
 
 def upload_thumbnail_path(instance, file_name):
+    """
+    get file name from form and give that to get_filename_ext for split name and ext
+    then
+    change name file with random numbers like --> you.jpg --> 22.jpg
+    and save in return path.
+    """
     y, m = datem.year, datem.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
@@ -54,10 +78,12 @@ class Product(models.Model):
     quantity = models.BigIntegerField(default=0)
     ilked = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
+    objects = ProductExistManager()
 
     def __str__(self):
         return self.name
 
+    # make thumbnail from original image and save it.
     def save(self, *args, **kwargs):
 
         if not self.make_thumbnail():
@@ -95,3 +121,6 @@ class Product(models.Model):
         temp_thumb.close()
 
         return True
+
+    def get_absolute_url(self):
+        return reverse('product:product_detail', args=[self.slug])

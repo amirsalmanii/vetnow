@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from .models import Category
+from .models import Category, Product
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
-
     parent = serializers.SerializerMethodField(
         read_only=True, method_name="get_child_categories")
 
@@ -12,6 +11,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'slug',
+            'get_absolute_url',
             'parent',
         ]
 
@@ -22,3 +22,31 @@ class CategoriesSerializer(serializers.ModelSerializer):
             many=True
         )
         return serializer.data
+
+
+class CategoryProductSerializer(serializers.ModelSerializer):
+    """
+    for give to product serializer field categories
+    """
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class ProductsSerializer(serializers.ModelSerializer):
+    categories = CategoryProductSerializer(many=True)
+
+    class Meta:
+        model = Product
+        fields = ('name',
+                  'slug',
+                  'thumbnail',
+                  'image',
+                  'get_absolute_url',
+                  'descreption',
+                  'price',
+                  'quantity',
+                  'ilked',
+                  'like_count',
+                  'categories'
+                  )
