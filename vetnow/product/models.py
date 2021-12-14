@@ -1,4 +1,12 @@
+from datetime import datetime
+from random import randrange
+from datetime import date
 from django.db import models
+from io import BytesIO
+from PIL import Image
+import os
+from django.core.files.base import ContentFile
+THUMB_SIZE = (400, 400)
 
 
 class Category(models.Model):
@@ -10,10 +18,37 @@ class Category(models.Model):
         return self.name
 
 
+def get_filename_ext(FilePath):
+    base_name = os.path.basename(FilePath)
+    name, ext = os.path.splitext(base_name)
+    return name, ext
+
+
+new_name = randrange(1000, 9999)
+data_now = str(date.today())
+datem = datetime.strptime(data_now, "%Y-%m-%d")
+
+
+def upload_image_path(instance, file_name):
+    y, m = datem.year, datem.month
+    name, ext = get_filename_ext(file_name)
+    final_name = f'{new_name}{ext}'
+    return f'images/products/{y}/{m}/{final_name}'
+
+
+def upload_thumbnail_path(instance, file_name):
+    y, m = datem.year, datem.month
+    name, ext = get_filename_ext(file_name)
+    final_name = f'{new_name}{ext}'
+    return f'thumbnails/products/{y}/{m}/{final_name}'
+
+
 class Product(models.Model):
     categories = models.ManyToManyField(Category, related_name='products')
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+    image = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=upload_thumbnail_path, blank=True, null=True)
     descreption = models.TextField()
     price = models.BigIntegerField(default=0)
     quantity = models.BigIntegerField(default=0)
@@ -21,3 +56,41 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+
+        if not self.make_thumbnail():
+            # set to a default thumbnail
+            raise Exception('Could not create thumbnail - is the file type valid?')
+
+        super(Product, self).save(*args, **kwargs)
+
+    def make_thumbnail(self):
+        print()
+        image = Image.open(self.image)
+        image.thumbnail(THUMB_SIZE, Image.ANTIALIAS)
+
+        thumb_name, thumb_extension = os.path.splitext(self.image.name)
+        thumb_extension = thumb_extension.lower()
+
+        thumb_filename = thumb_name + '_thumb' + thumb_extension
+
+        if thumb_extension in ['.jpg', '.jpeg']:
+            FTYPE = 'JPEG'
+        elif thumb_extension == '.gif':
+            FTYPE = 'GIF'
+        elif thumb_extension == '.png':
+            FTYPE = 'PNG'
+        else:
+            return False  # Unrecognized file type
+
+        # Save thumbnail to in-memory file as StringIO
+        temp_thumb = BytesIO()
+        image.save(temp_thumb, FTYPE)
+        temp_thumb.seek(0)
+
+        # set save=False, otherwise it will run in an infinite loop
+        self.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
+        temp_thumb.close()
+
+        return True
