@@ -5,4 +5,5 @@
 [x]-add image to model & thumnail image
 [x]-create serilizer for products
 []-add comment section to products
+[]-fix like in product fiels in serilizer
 
