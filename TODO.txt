@@ -2,4 +2,7 @@
 [x]-login-with-otp
 [x]-create-product
 [x]-model-product
-[]-add image to model & thumnail image
+[x]-add image to model & thumnail image
+[x]-create serilizer for products
+[]-add comment section to products
+

@@ -7,8 +7,8 @@ from PIL import Image
 import os
 from django.core.files.base import ContentFile
 from django.urls import reverse
-
 from .managers import ProductExistManager
+
 THUMB_SIZE = (400, 400)
 
 
@@ -38,7 +38,7 @@ def get_filename_ext(FilePath):
 # This datas is for the bottom two functions
 new_name = randrange(1000, 9999)
 data_now = str(date.today())
-datem = datetime.strptime(data_now, "%Y-%m-%d")
+split_date = datetime.strptime(data_now, "%Y-%m-%d")
 
 
 def upload_image_path(instance, file_name):
@@ -46,9 +46,9 @@ def upload_image_path(instance, file_name):
     get file name from form and give that to get_filename_ext for split name and ext
     then
     change name file with random numbers like --> you.jpg --> 22.jpg
-    and save in return path.
+    and save in return path with split dates like --> 2021/12/filename.
     """
-    y, m = datem.year, datem.month
+    y, m = split_date.year, split_date.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
     return f'images/products/{y}/{m}/{final_name}'
@@ -59,9 +59,9 @@ def upload_thumbnail_path(instance, file_name):
     get file name from form and give that to get_filename_ext for split name and ext
     then
     change name file with random numbers like --> you.jpg --> 22.jpg
-    and save in return path.
+    and save in return path with split dates like --> 2021/12/filename.
     """
-    y, m = datem.year, datem.month
+    y, m = split_date.year, split_date.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
     return f'thumbnails/products/{y}/{m}/{final_name}'
@@ -74,9 +74,10 @@ class Product(models.Model):
     image = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=upload_thumbnail_path, blank=True, null=True)
     descreption = models.TextField()
+    available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
     quantity = models.BigIntegerField(default=0)
-    ilked = models.BooleanField(default=False, null=True, blank=True)
+    like = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
     objects = ProductExistManager()
 
