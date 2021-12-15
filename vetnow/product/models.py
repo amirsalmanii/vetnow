@@ -8,6 +8,7 @@ import os
 from django.core.files.base import ContentFile
 from django.urls import reverse
 from .managers import ProductExistManager
+from django.utils.html import format_html
 
 THUMB_SIZE = (400, 400)
 
@@ -125,3 +126,9 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product:product_detail', args=[self.slug])
+
+    def thumbnail_tag(self):
+        """
+        for show image in admin panel
+        """
+        return format_html(f"<img src='{self.thumbnail.url}' width='80' height='70'>")
