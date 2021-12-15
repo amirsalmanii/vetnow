@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.urls import reverse
+from django.utils.html import format_html
+
 from .managers import MyUserManager
 
 
@@ -36,3 +39,15 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+    def get_absolute_url(self):
+        return reverse('accounts:user_update', args=[self.id])
+
+    def user_image(self):
+        """
+        for show avatar in admin panel
+        """
+        try:
+            return format_html(f"<img src='{self.avatar.url}' width='80', height='70'>")
+        except:
+            return 'no image'

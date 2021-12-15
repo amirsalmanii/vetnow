@@ -131,4 +131,7 @@ class Product(models.Model):
         """
         for show image in admin panel
         """
-        return format_html(f"<img src='{self.thumbnail.url}' width='80' height='70'>")
+        try:
+            return format_html(f"<img src='{self.thumbnail.url}' width='80' height='70'>")
+        except:
+            return format_html('ni image')

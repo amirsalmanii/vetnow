@@ -45,3 +45,26 @@ class UserConfirmOtp(APIView):
             token = Token.objects.create(user=user)
             return Response({"token": token.key}, status=200)
         return Response(serializer.errors, status=404)
+
+
+class UserRegisterView(APIView):
+    def post(self, request):
+        serializer = serializers.UserRegisterSerilizer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            username = data['phone_number']
+            user = User(username=username)
+            user.save()
+            token = Token.objects.create(user=user)
+            return Response({"token": token.key}, status=200)
+        else:
+            return Response(serializer.errors, status=401)
+
+
+class UserUpdateView(APIView):
+    def put(self, request, pk):
+        user = User.objects.get(id=pk)
+        serializer = serializers.UserUpdateSerilizer(instance=user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data, status=200)

@@ -46,7 +46,7 @@ class ProductsSerializer(serializers.ModelSerializer):
                   'descreption',
                   'price',
                   'quantity',
-                  'ilked',
+                  'like',
                   'like_count',
                   'categories'
                   )

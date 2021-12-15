@@ -46,3 +46,34 @@ class OtpConfirmSerializer(serializers.Serializer):
         else:
             pass  # alwase we have key because backend sent to front end correctly.
 
+
+class UserRegisterSerilizer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=11, allow_null=False, allow_blank=False)
+
+    def validate_phone_number(self, value):
+        """
+        check this number valid in iran system [valid number in iran --> 09148856432]
+        """
+        if '0' in value[0] and '9' in value[1]:
+            return value
+        else:
+            raise serializers.ValidationError("شماره وارده استندارد نمی باشد")
+
+
+class UserUpdateSerilizer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "avatar",
+            "national_code",
+            "job",
+            "graduate",
+            "experience",
+            "doctorDescreption",
+            "doctorId",
+        )
+
