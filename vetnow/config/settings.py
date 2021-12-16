@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'otp.apps.OtpConfig',
     'product.apps.ProductConfig',
     'comment.apps.CommentConfig',
+    'order.apps.OrderConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
