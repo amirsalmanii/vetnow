@@ -80,6 +80,7 @@ class Product(models.Model):
     quantity = models.BigIntegerField(default=0)
     like = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
+    material = models.CharField(max_length=100, null=True, blank=True)
     objects = ProductExistManager()
 
     def __str__(self):
