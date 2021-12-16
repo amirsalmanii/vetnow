@@ -19,6 +19,15 @@ class User(AbstractBaseUser):
     doctorDescreption = models.TextField(null=True, blank=True)
     doctorId = models.CharField(max_length=100, null=True, blank=True)
 
+    # for address
+    state = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    plate = models.CharField(max_length=5, null=True, blank=True) # pelak khane
+    zip_code = models.CharField(max_length=10, null=True, blank=True)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
+    phone_number = models.CharField(max_length=11, null=True, blank=True)
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
     objects = MyUserManager()
