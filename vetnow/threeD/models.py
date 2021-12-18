@@ -1,7 +1,10 @@
-from django.db import models
-from product.models import Product, split_date, get_filename_ext
 import os
+
 from django.conf import settings
+from django.db import models
+from django.urls import reverse
+
+from product.models import Product, get_filename_ext
 
 # for using in file names like --> 1.jpg, 2.jpg .... 30.jpg
 numbers_for_files_name = list(range(1, 31))
@@ -21,11 +24,11 @@ def upload_image_path(instance, file_name):
         # try to get files list in dir and split that from number and ext and sorted numbers
         # like this --> (2, 3 , 1) --> (1, 2 , 3 ,4)
         list_of_images = os.listdir(base)
-        normalaize_list_images = []
+        normalize_list_images = []
         for image in list_of_images:
             number, ex = image.split('.')
-            normalaize_list_images.append(int(number))
-        normalaize_list_images = sorted(normalaize_list_images)
+            normalize_list_images.append(int(number))
+        normalize_list_images = sorted(normalize_list_images)
     except:
         # if we can't recognize dir we can say we don't have any file, so we start from 1
         number = 1
@@ -33,7 +36,7 @@ def upload_image_path(instance, file_name):
         # when we dont have except
         # we're looping in number and if number not in normalize_list_images we set that for file name
         for n in numbers_for_files_name:
-            if n in normalaize_list_images:
+            if n in normalize_list_images:
                 pass
             else:
                 number = n
@@ -75,3 +78,6 @@ class ThreeD(models.Model):
     image28 = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
     image29 = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
     image30 = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('threed:show_3d_images', args=[self.product.slug])
