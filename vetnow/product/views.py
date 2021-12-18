@@ -22,7 +22,7 @@ class ProductDetaiView(APIView):
         product = Product.objects.is_exist_product(slug)
         if not product:
             return Response(status=404)
-        serializer = serializers.ProductsSerializer(product)
+        serializer = serializers.ProductsSerializer(product, context={'request': request})
         return Response(serializer.data)
 
 
@@ -34,4 +34,4 @@ class ProductByCategory(APIView):
             serializer = serializers.ProductsSerializer(products, many=True)
         except:
             return Response(status=404)
-        return Response(serializer.data,status=200)
+        return Response(serializer.data, status=200)
