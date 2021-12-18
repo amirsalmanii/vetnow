@@ -75,5 +75,13 @@ class UserUpdateSerilizer(serializers.ModelSerializer):
             "experience",
             "doctorDescreption",
             "doctorId",
+            # address fields
+            "state",
+            "city",
+            "address",
+            "plate",
+            "zip_code",
+            "full_name",
+            "phone_number",
         )
 
