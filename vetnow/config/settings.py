@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'comment.apps.CommentConfig',
     'order.apps.OrderConfig',
     'threeD.apps.ThreedConfig',
+    'accounting.apps.AccountingConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
