@@ -8,3 +8,11 @@ class ThreeDImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThreeD
         fields = '__all__'
+
+
+class ThreeDImagesUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ThreeD
+        exclude = ['product']
+
