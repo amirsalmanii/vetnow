@@ -25,7 +25,7 @@ class OtpConfirmSerializer(serializers.Serializer):
 
     def validate(self, data):
         """
-        Check that password is correct .
+        Check that password is correct . or time is valid (less then 2 min) and delete it
         """
 
         otp_obj = UserOtp.objects.filter(key=data['key'])
@@ -37,6 +37,7 @@ class OtpConfirmSerializer(serializers.Serializer):
             create_time_plus_2_min = timedelta(minutes=2) + create_time
             now = timezone.now()
             if now > create_time_plus_2_min:
+                otp_obj.delete()
                 raise serializers.ValidationError('بیشتر از دو دقیقه از ارسال این کد گذشته است لطفا دوباره امتحان کنید')
             if data['password'] == otp_obj.password:
                 data['phone_number'] = otp_obj.phone_number
