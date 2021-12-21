@@ -77,6 +77,7 @@ class Product(models.Model):
     descreption = models.TextField()
     available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
+    company_price = models.BigIntegerField(default=0)
     quantity = models.BigIntegerField(default=0)
     like = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
