@@ -16,10 +16,14 @@ THUMB_SIZE = (400, 400)
 class Category(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, allow_unicode=True, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = self.name.replace(' ', '-')
+        super(Category, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('product:category_products', args=[self.slug])
@@ -37,9 +41,11 @@ def get_filename_ext(FilePath):
 
 
 # This datas is for the bottom two functions
-new_name = randrange(1000, 9999)
-data_now = str(date.today())
-split_date = datetime.strptime(data_now, "%Y-%m-%d")
+def give_data_to_path():
+    new_name = randrange(1000, 9999)
+    data_now = str(date.today())
+    split_date = datetime.strptime(data_now, "%Y-%m-%d")
+    return new_name, data_now, split_date
 
 
 def upload_image_path(instance, file_name):
@@ -49,6 +55,7 @@ def upload_image_path(instance, file_name):
     change name file with random numbers like --> you.jpg --> 22.jpg
     and save in return path with split dates like --> 2021/12/filename.
     """
+    new_name, data_now, split_date = give_data_to_path()
     y, m = split_date.year, split_date.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
@@ -62,6 +69,7 @@ def upload_thumbnail_path(instance, file_name):
     change name file with random numbers like --> you.jpg --> 22.jpg
     and save in return path with split dates like --> 2021/12/filename.
     """
+    new_name, data_now, split_date = give_data_to_path()
     y, m = split_date.year, split_date.month
     name, ext = get_filename_ext(file_name)
     final_name = f'{new_name}{ext}'
@@ -71,7 +79,7 @@ def upload_thumbnail_path(instance, file_name):
 class Product(models.Model):
     categories = models.ManyToManyField(Category, related_name='products')
     name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, allow_unicode=True)
     image = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     image2 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     image3 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
@@ -80,7 +88,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
     company_price = models.BigIntegerField(default=0)
-    quantity = models.BigIntegerField(default=0)
+    quantity = models.PositiveBigIntegerField(default=0)
     like = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
     material = models.CharField(max_length=100, null=True, blank=True)
@@ -93,6 +101,13 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.make_thumbnail():
             pass
+
+        if self.quantity == 0:
+            self.available = False
+        elif self.quantity >= 1:
+            self.available = True
+
+        self.slug = self.name.replace(' ', '=')
         super(Product, self).save(*args, **kwargs)
 
     def make_thumbnail(self):
@@ -130,5 +145,3 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product:product_detail', args=[self.slug])
-
-

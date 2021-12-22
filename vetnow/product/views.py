@@ -35,3 +35,13 @@ class ProductByCategory(APIView):
         except:
             return Response(status=404)
         return Response(serializer.data, status=200)
+
+
+class ProductDelete(APIView):
+    def delete(self, request, slug):
+        product = Product.objects.is_exist_product(slug)
+        if product:
+            product.delete()
+            return Response(status=204)
+        else:
+            return Response(status=404)
