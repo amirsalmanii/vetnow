@@ -73,6 +73,8 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
     image = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
+    image2 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
+    image3 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=upload_thumbnail_path, blank=True, null=True)
     descreption = models.TextField()
     available = models.BooleanField(default=True)
