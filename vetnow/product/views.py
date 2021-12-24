@@ -3,12 +3,36 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from .models import Category, Product
 from . import serializers
+from ip2geotools.databases.noncommercial import DbIpCity
+from accounts.models import IpTables
 
 
 class CategoriesView(APIView):
+    """
+    Because we want to get the user's IP and this view is called,
+     we always use it here on the first page
+    """
     def get(self, request):
         query = Category.objects.filter(parent__isnull=True)
         serializer = serializers.CategoriesSerializer(query, many=True)
+        # get user ip
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        # get user city
+        exist = IpTables.objects.filter(ip=ip)
+        if not exist:
+            try:
+                response = DbIpCity.get(ip, api_key='free')
+                IpTables.objects.create(ip=ip, city=response.city)
+            except:
+                pass
+        else:
+            pass
+        # return categories
         return Response(serializer.data, status=200)
 
 
