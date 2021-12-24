@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from rest_framework.authtoken.admin import TokenProxy, TokenAdmin  # edit for unregister in admin
-from .models import User as CustomUser
+from .models import User as CustomUser, IpTables
 from .forms import UserCreationForm, UserChangeForm
 
 
@@ -43,3 +43,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(CustomUser, UserAdmin)
 admin.site.unregister(Group)
 admin.site.site_header = 'vet now'
+admin.site.register(IpTables)

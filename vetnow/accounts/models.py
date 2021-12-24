@@ -60,3 +60,8 @@ class User(AbstractBaseUser):
             return format_html(f"<img src='{self.avatar.url}' width='80', height='70'>")
         except:
             return 'no image'
+
+
+class IpTables(models.Model):
+    ip = models.GenericIPAddressField()
+    city = models.CharField(max_length=200)
