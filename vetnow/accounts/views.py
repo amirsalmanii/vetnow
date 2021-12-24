@@ -63,7 +63,7 @@ class UserRegisterView(APIView):
 
 
 class UserUpdateView(APIView):
-    def put(self, request, pk):
+    def put(self, request, pk):# TODO: use try exept
         user = User.objects.get(id=pk)
         serializer = serializers.UserUpdateSerilizer(instance=user, data=request.data)
         if serializer.is_valid():

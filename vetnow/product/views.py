@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from .models import Category, Product
 from . import serializers
 from ip2geotools.databases.noncommercial import DbIpCity
@@ -37,7 +37,7 @@ class CategoriesView(APIView):
 
 
 class ProductsListView(ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(available=True)
     serializer_class = serializers.ProductsSerializer
 
 
@@ -54,7 +54,7 @@ class ProductByCategory(APIView):
     def get(self, request, slug):
         try:
             category = Category.objects.filter(slug=slug).first()
-            products = category.products.all()
+            products = category.products.filter(available=True)
             serializer = serializers.ProductsSerializer(products, many=True)
         except:
             return Response(status=404)
@@ -65,7 +65,16 @@ class ProductDelete(APIView):
     def delete(self, request, slug):
         product = Product.objects.is_exist_product(slug)
         if product:
-            product.delete()
+            product.available = False
+            product.save()
             return Response(status=204)
         else:
             return Response(status=404)
+
+
+class ProductUpdate(RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    lookup_field = "slug"
+    serializer_class = serializers.ProductUpdateSerializer
+
+

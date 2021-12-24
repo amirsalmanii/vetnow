@@ -6,6 +6,6 @@
 [x]-create serilizer for products
 [x]-add comment section to products
 [x]-fix like in product fiels in serilizer
-[]-read ip address and find location
-[]-update and delete product view
+[x]-read ip address and find location
+[x]-update and delete product view
 

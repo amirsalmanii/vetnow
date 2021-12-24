@@ -49,3 +49,11 @@ class ProductsSerializer(serializers.ModelSerializer):
                   'like_count',
                   'categories'
                   )
+
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    # categories = CategoryProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
