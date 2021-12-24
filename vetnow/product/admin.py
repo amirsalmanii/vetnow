@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import display
 
-from .models import Category, Product
+from .models import Category, Product, LikeProduct
 # Register your models here.
 
 
@@ -21,3 +21,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ("available", "price", "quantity")
     list_filter = ("available", "price")
     search_fields = ("name", "descreption")
+
+
+admin.site.register(LikeProduct)

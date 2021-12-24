@@ -5,11 +5,14 @@ from django.db import models
 from io import BytesIO
 from PIL import Image
 import os
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.urls import reverse
 from .managers import ProductExistManager
-from django.utils.html import format_html
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+User = get_user_model()
 THUMB_SIZE = (400, 400)
 
 
@@ -89,7 +92,6 @@ class Product(models.Model):
     price = models.BigIntegerField(default=0)
     company_price = models.BigIntegerField(default=0)
     quantity = models.PositiveBigIntegerField(default=0)
-    like = models.BooleanField(default=False, null=True, blank=True)
     like_count = models.BigIntegerField(default=0, null=True, blank=True)
     material = models.CharField(max_length=100, null=True, blank=True)
     objects = ProductExistManager()
@@ -145,3 +147,24 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product:product_detail', args=[self.slug])
+
+
+class LikeProduct(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes', null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likesp')
+    liked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user} liked {self.product.name}'
+
+
+@receiver(post_save, sender=LikeProduct)
+def update_stock(sender, instance, **kwargs):
+    product = instance.product
+    if not instance.liked:
+        product.like_count += 1
+        product.save()
+        instance.liked = True
+        instance.save()
+    else:
+        pass
