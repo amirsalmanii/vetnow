@@ -159,7 +159,7 @@ class LikeProduct(models.Model):
 
 
 @receiver(post_save, sender=LikeProduct)
-def update_stock(sender, instance, **kwargs):
+def product_liked_count_update(sender, instance, **kwargs):
     product = instance.product
     if not instance.liked:
         product.like_count += 1
