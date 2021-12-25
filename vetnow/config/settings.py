@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'order.apps.OrderConfig',
     'threeD.apps.ThreedConfig',
     'accounting.apps.AccountingConfig',
+    'news.apps.NewsConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
