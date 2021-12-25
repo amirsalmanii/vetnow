@@ -89,3 +89,6 @@ class ProductUpdate(RetrieveUpdateAPIView):
     serializer_class = serializers.ProductUpdateSerializer
 
 
+class ProductCreate(CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = serializers.ProductUpdateSerializer
