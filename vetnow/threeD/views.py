@@ -12,7 +12,7 @@ class ThreedViews(APIView):
             threed_images = ThreeD.objects.filter(product=product).first()
             serializer = ThreeDImagesSerializer(threed_images, context={'request': request})
         except:
-            return Response({"1": "2"}, status=404)
+            return Response(status=404)
         else:
             return Response(serializer.data, status=200)
 
@@ -24,9 +24,8 @@ class ThreedUpdate(APIView):
             threed_images = ThreeD.objects.filter(product=product).first()
             serializer = ThreeDImagesUpdateSerializer(instance=threed_images, data=request.data)
         except:
-            return Response({"1": "2"}, status=404)
+            return Response(status=404)
         else:
-            # serializer.data['product'] = product
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=200)
@@ -34,3 +33,12 @@ class ThreedUpdate(APIView):
                 return Response(serializer.errors)
 
 
+class ThreedDelete(APIView):
+    def delete(self, request, slug):
+        product = Product.objects.is_exist_product(slug)
+        try:
+            threed_images = ThreeD.objects.filter(product=product).first()
+            threed_images.delete()
+            return Response(status=204)
+        except:
+            return Response(status=404)
