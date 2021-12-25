@@ -109,7 +109,7 @@ class Product(models.Model):
         elif self.quantity >= 1:
             self.available = True
 
-        self.slug = self.name.replace(' ', '=')
+        self.slug = self.name.replace(' ', '-')
         super(Product, self).save(*args, **kwargs)
 
     def make_thumbnail(self):
