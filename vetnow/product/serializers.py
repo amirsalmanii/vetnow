@@ -24,6 +24,13 @@ class CategoriesSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
+class CategoryAddAndUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
 class CategoryProductSerializer(serializers.ModelSerializer):
     """
     for give to product serializer field categories

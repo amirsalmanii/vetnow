@@ -1,6 +1,6 @@
 [x]-create-custom-user
-[x]-login-with-otp
-[x]-create-product
+[x]-login and register-with-otp
+[x]-create-product 
 [x]-model-product
 [x]-add image to model & thumnail image
 [x]-create serilizer for products
@@ -8,4 +8,4 @@
 [x]-fix like in product fiels in serilizer
 [x]-read ip address and find location
 [x]-update and delete product view
-
+[]-add news models and views ...

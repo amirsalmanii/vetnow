@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView
 from .models import Category, Product
 from . import serializers
 from ip2geotools.databases.noncommercial import DbIpCity
@@ -34,6 +34,17 @@ class CategoriesView(APIView):
             pass
         # return categories
         return Response(serializer.data, status=200)
+
+
+class CreateCategory(CreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = serializers.CategoryAddAndUpdateSerializer
+
+
+class UpdateCategory(RetrieveUpdateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = serializers.CategoryAddAndUpdateSerializer
+    lookup_field = "slug"
 
 
 class ProductsListView(ListAPIView):
