@@ -9,6 +9,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
+            'id',
             'name',
             'slug',
             'get_absolute_url',
