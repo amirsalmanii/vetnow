@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from product.models import Product
 from .models import ThreeD
@@ -42,3 +43,8 @@ class ThreedDelete(APIView):
             return Response(status=204)
         except:
             return Response(status=404)
+
+
+class ThreedCreate(CreateAPIView):
+    queryset = ThreeD.objects.all()
+    serializer_class = ThreeDImagesSerializer
