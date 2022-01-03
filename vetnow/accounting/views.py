@@ -49,6 +49,7 @@ class ComputeGainWithTime(APIView):
     def post(self, request):
         serializer = DateSerilizer(data=request.data)
         if serializer.is_valid():
+            # change miladi to shamsi for filtering
             slug = serializer.validated_data.get('slug')
             data_start = serializer.validated_data.get('date_start')
             data_start = data_start.split(' ')
