@@ -46,21 +46,11 @@ class ProductsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name',
-                  'slug',
-                  'thumbnail',
-                  'image',
-                  'get_absolute_url',
-                  'descreption',
-                  'price',
-                  'quantity',
-                  'like_count',
-                  'categories'
-                  )
+        fields = '__all__'
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
-    # categories = CategoryProductSerializer(many=True, read_only=True)
+    # categories = CategoryProductSerializer(many=True)
 
     class Meta:
         model = Product
