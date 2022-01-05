@@ -84,3 +84,34 @@ class ComputeGainWithTime(APIView):
             total_company_price += (order.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
         gain_ = total_amount - total_company_price
         return Response({"gains": gain_}, status=200)
+
+
+class AllOdersCountView(APIView):
+    """
+    return all orders count
+    """
+    def get(self, request):
+        orders = Order.objects.filter(payment_status='p').count()
+        return Response({"all": orders}, status=200)
+
+
+class TotalCategoryGainsView(APIView):
+    """
+    find total orders amounts
+    and find company price of orders products
+    and subtracts these numbers
+    """
+    def get(self, request):
+        total_amounts_of_orders = (Order.objects.filter(payment_status='p').aggregate(Sum('amount'))).get('amount__sum')
+
+        # Addition products company price in orders
+        products_in_orders = Order.objects.filter(payment_status='p')
+        all_products_in_orders_company_price = 0
+        for pr in products_in_orders:
+            all_products_in_orders_company_price += (pr.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
+
+
+        result = total_amounts_of_orders - all_products_in_orders_company_price
+        return Response({"total_gain":result},status=200)
+
+
