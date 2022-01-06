@@ -4,6 +4,7 @@ from product.models import Product
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
+import uuid
 
 User = get_user_model()
 
@@ -21,6 +22,7 @@ class Order(models.Model):
     payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=20)
     payment_date = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    order_id = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return f'{str(self.owner)}'
