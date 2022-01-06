@@ -1,17 +1,19 @@
-from datetime import datetime
-from random import randrange
-from datetime import date
-from django.db import models
-from io import BytesIO
-from PIL import Image
 import os
+from datetime import date
+from datetime import datetime
+from io import BytesIO
+from random import randrange
+
+from PIL import Image
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from django.urls import reverse
-from .managers import ProductExistManager
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse
+
+from .managers import ProductExistManager
 
 User = get_user_model()
 THUMB_SIZE = (400, 400)
@@ -88,6 +90,7 @@ class Product(models.Model):
     image2 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     image3 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=upload_thumbnail_path, blank=True, null=True)
+    pdf_file = models.FileField(upload_to='/products/pdfs/', null=True, blank=True)
     descreption = RichTextUploadingField(null=True, blank=True)
     available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
