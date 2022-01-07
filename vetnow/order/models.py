@@ -1,12 +1,13 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-from product.models import Product
-from django.db.models.signals import pre_save, post_save
-from django.dispatch import receiver
-from django.utils.timezone import now
 import uuid
 
-User = get_user_model()
+from django.conf import settings
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils.timezone import now
+from product.models import Product
+
+User = settings.AUTH_USER_MODEL
 
 
 class Order(models.Model):
