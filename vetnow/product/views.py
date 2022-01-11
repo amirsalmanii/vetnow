@@ -5,12 +5,17 @@ from .models import Category, Product
 from . import serializers
 from ip2geotools.databases.noncommercial import DbIpCity
 from accounts.models import IpTables
+from rest_framework.pagination import PageNumberPagination
+ 
+
+class MyPagination(PageNumberPagination):
+    page_size = 2
 
 
 class CategoriesView(APIView):
     """
     Because we want to get the user's IP and this view is called,
-     we always use it here on the first page
+    we always use it here on the first page
     """
     def get(self, request):
         query = Category.objects.filter(parent__isnull=True)
@@ -50,6 +55,7 @@ class UpdateCategory(RetrieveUpdateAPIView):
 class ProductsListView(ListAPIView):
     queryset = Product.objects.filter(available=True)
     serializer_class = serializers.ProductsSerializer
+    pagination_class = MyPagination    
 
 
 class ProductDetaiView(APIView):
