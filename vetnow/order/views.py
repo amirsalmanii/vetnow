@@ -28,3 +28,12 @@ class UserOrdersView(APIView):
         return Response(serializer.data)
 
 
+class OrdersRefundCountView(APIView):
+    """
+    return all orders count if status is refund
+    """
+    def get(self, request):
+        orders_refund_counts = Order.objects.filter(payment_status='r').count()
+        return Response({"refunds_count": orders_refund_counts}, status=200)
+
+
