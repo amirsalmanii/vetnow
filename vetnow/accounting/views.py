@@ -83,7 +83,7 @@ class ComputeGainWithTime(APIView):
             total_amount += order.amount
             total_company_price += (order.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
         gain_ = total_amount - total_company_price
-        return Response({"gains": gain_}, status=200)
+        return Response({"gains": gain_, "total_sells_per_month": total_amount}, status=200)
 
 
 class AllOdersCountView(APIView):
@@ -112,6 +112,8 @@ class TotalCategoryGainsView(APIView):
 
 
         result = total_amounts_of_orders - all_products_in_orders_company_price
-        return Response({"total_gain":result},status=200)
+        #send total gain and send total amounts(total sells)
+        return Response({"total_gain":result, "total_sells": total_amounts_of_orders},status=200)
+
 
 
