@@ -66,6 +66,7 @@ class UserUpdateSerilizer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "username",
             "email",
             "first_name",
             "last_name",
@@ -78,6 +79,8 @@ class UserUpdateSerilizer(serializers.ModelSerializer):
             "doctorId",
             # address fields
             "state",
+            "is_doctor",
+            "is_admin",
             "city",
             "address",
             "plate",
@@ -86,3 +89,39 @@ class UserUpdateSerilizer(serializers.ModelSerializer):
             "phone_number",
         )
 
+
+class UserListSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "avatar",
+            "national_code",
+            "job",
+            "graduate",
+            "experience",
+            "doctorDescreption",
+            "doctorId",
+            "is_admin",
+            "is_doctor",
+            # address fields
+            "state",
+            "city",
+            "address",
+            "plate",
+            "zip_code",
+            "full_name",
+            "phone_number",
+        )

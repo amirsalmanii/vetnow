@@ -27,6 +27,13 @@ class UserAdmin(BaseUserAdmin):
                            'doctorId',
                            'avatar',
                            'password',
+                           'state',
+                           'city',
+                           'address',
+                           'plate',
+                           'zip_code',
+                           'full_name',
+                           'phone_number',
                            )}),
         ('Personal Info', {'fields': ('is_active', 'is_doctor')}),
         ('Personal Perms', {'fields': ('is_admin',)})

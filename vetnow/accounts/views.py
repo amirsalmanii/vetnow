@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from . import serializers
 from rest_framework.response import Response
 from otp.models import UserOtp
@@ -6,6 +7,11 @@ from kavenegar import *
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 from .models import User
+from rest_framework.pagination import PageNumberPagination
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 2
 
 
 class UserVerifyAndOtp(APIView):
@@ -63,9 +69,27 @@ class UserRegisterView(APIView):
 
 
 class UserUpdateView(APIView):
+    def get(self, request, pk):
+        user = User.objects.get(id=pk)
+        serializer = serializers.UserListSerializer(user, context={'request': request})
+        return Response(serializer.data, status=200)
+        
     def put(self, request, pk):# TODO: use try exept
         user = User.objects.get(id=pk)
-        serializer = serializers.UserUpdateSerilizer(instance=user, data=request.data)
+        serializer = serializers.UserUpdateSerilizer(instance=user, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-        return Response(serializer.data, status=200)
+            return Response(serializer.data, status=200)
+        else:
+            return Response(serializer.errors)
+
+
+class UserListView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserListSerializer
+    pagination_class = MyPagination
+    
+
+class UserCreateView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserCreateSerializer
