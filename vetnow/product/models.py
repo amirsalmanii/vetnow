@@ -90,7 +90,7 @@ class Product(models.Model):
     image2 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     image3 = models.ImageField(upload_to=upload_image_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=upload_thumbnail_path, blank=True, null=True)
-    pdf_file = models.FileField(upload_to='/products/pdfs/', null=True, blank=True)
+    pdf_file = models.FileField(upload_to='products/pdfs/', null=True, blank=True)
     descreption = RichTextUploadingField(null=True, blank=True)
     available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
