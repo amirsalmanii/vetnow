@@ -73,7 +73,8 @@ docs/_build/
 
 # PyBuilder
 target/
-
+*.idea
+vetnow/.vscode/
 
 ### Django ###
 *.log
@@ -86,3 +87,4 @@ local_settings.py
 db.sqlite3
 
 *media*
+vetnow/config/secret.py
