@@ -81,3 +81,6 @@ class ThreeD(models.Model):
 
     def get_absolute_url(self):
         return reverse('threed:show_3d_images', args=[self.product.slug])
+    
+    def __str__(self):
+        return f'3d for {self.product}'
