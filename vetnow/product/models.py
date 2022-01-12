@@ -94,6 +94,7 @@ class Product(models.Model):
     descreption = RichTextUploadingField(null=True, blank=True)
     available = models.BooleanField(default=True)
     price = models.BigIntegerField(default=0)
+    price_after_discount = models.BigIntegerField(default=0)
     company_price = models.BigIntegerField(default=0)
     manufacturer_company = models.CharField(max_length=120, null=True, blank=True)
     quantity = models.PositiveBigIntegerField(default=0)
