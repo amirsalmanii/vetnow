@@ -6,7 +6,7 @@ from random import randrange
 
 from PIL import Image
 from ckeditor_uploader.fields import RichTextUploadingField
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models.signals import post_save
@@ -15,7 +15,7 @@ from django.urls import reverse
 
 from .managers import ProductExistManager
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 THUMB_SIZE = (400, 400)
 
 
