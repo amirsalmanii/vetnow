@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'threeD.apps.ThreedConfig',
     'accounting.apps.AccountingConfig',
     'news.apps.NewsConfig',
+    'discount.apps.DiscountConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
