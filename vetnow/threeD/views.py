@@ -19,6 +19,16 @@ class ThreedViews(APIView):
 
 
 class ThreedUpdate(APIView):
+    def get(self, request, slug):
+        product = Product.objects.is_exist_product(slug)
+        try:
+            threed_images = ThreeD.objects.filter(product=product).first()
+            serializer = ThreeDImagesSerializer(threed_images)
+        except:
+            return Response(status=404)
+        else:
+            return Response(serializer.data)
+
     def put(self, request, slug):
         product = Product.objects.is_exist_product(slug)
         try:
