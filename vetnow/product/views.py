@@ -1,12 +1,13 @@
+from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView
+from ip2geotools.databases.noncommercial import DbIpCity
+from rest_framework.pagination import PageNumberPagination
 from .models import Category, Product
 from . import serializers
-from ip2geotools.databases.noncommercial import DbIpCity
 from accounts.models import IpTables
-from rest_framework.pagination import PageNumberPagination
- 
+
 
 class MyPagination(PageNumberPagination):
     page_size = 2
@@ -53,9 +54,37 @@ class UpdateCategory(RetrieveUpdateAPIView):
 
 
 class ProductsListView(ListAPIView):
-    queryset = Product.objects.filter(available=True)
+    """
+    see get_queryset func document
+    """
     serializer_class = serializers.ProductsSerializer
     pagination_class = MyPagination    
+
+    def get_queryset(self):
+        """
+        this functin return list of products
+        but
+        in this way we check discount time is valid if valid we send with product list
+        if not valid we send 0 in discunt_after_price field (means we dont have any discunt)
+        """
+        now = timezone.now().date()
+        products = Product.objects.filter(available=True)
+        for pr in products:
+            if pr.price_after_discount > 0:
+                if pr.pdiscount.all():
+                    # means we have discount object in discount model
+                    for discount in pr.pdiscount.all():
+                        # check discount date is valid
+                        if discount.valid_to < now:
+                            pr.price_after_discount = 0
+                            pr.save()
+                else:
+                    # means if this product dont have any discount object
+                    # we can set value to 0
+                    pr.price_after_discount = 0
+                    pr.save()
+                    print('yessssssssss')
+        return products
 
 
 class ProductDetaiView(APIView):
