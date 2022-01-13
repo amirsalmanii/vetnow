@@ -23,7 +23,7 @@ class ThreedUpdate(APIView):
         product = Product.objects.is_exist_product(slug)
         try:
             threed_images = ThreeD.objects.filter(product=product).first()
-            serializer = ThreeDImagesSerializer(threed_images)
+            serializer = ThreeDImagesSerializer(threed_images, context={'request': request})
         except:
             return Response(status=404)
         else:
