@@ -32,6 +32,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['email']
     objects = MyUserManager()
 
+    is_employee = models.BooleanField(default=False)
     is_doctor = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
