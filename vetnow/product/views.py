@@ -1,45 +1,25 @@
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView
-from ip2geotools.databases.noncommercial import DbIpCity
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from .models import Category, Product
 from . import serializers
-from accounts.models import IpTables
 
 
 class MyPagination(PageNumberPagination):
     page_size = 2
 
 
-class CategoriesView(APIView):
-    """
-    Because we want to get the user's IP and this view is called,
-    we always use it here on the first page
-    """
-    def get(self, request):
-        query = Category.objects.filter(parent__isnull=True)
-        serializer = serializers.CategoriesSerializer(query, many=True)
-        # get user ip
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
+class CategoriesWithPaginationView(ListAPIView):
+    queryset = Category.objects.filter()# parent__isnull=True
+    serializer_class = serializers.CategoriesSerializer
+    pagination_class = MyPagination
 
-        # get user city
-        exist = IpTables.objects.filter(ip=ip)
-        if not exist:
-            try:
-                response = DbIpCity.get(ip, api_key='free')
-                IpTables.objects.create(ip=ip, city=response.city)
-            except:
-                pass
-        else:
-            pass
-        # return categories
-        return Response(serializer.data, status=200)
+
+class CategoriesListView(ListAPIView):
+    queryset = Category.objects.filter()# parent__isnull=True
+    serializer_class = serializers.CategoriesSerializer
 
 
 class CreateCategory(CreateAPIView):
@@ -53,7 +33,16 @@ class UpdateCategory(RetrieveUpdateAPIView):
     lookup_field = "slug"
 
 
-class ProductsListView(ListAPIView):
+class DeleteCategory(DestroyAPIView):
+    """
+    this class get category slug and delete category
+    """
+    queryset = Category.objects.all()
+    serializer_class = serializers.CategoryAddAndUpdateSerializer
+    lookup_field = 'slug'
+
+
+class ProductsListPaginationView(ListAPIView):
     """
     see get_queryset func document
     """
@@ -65,7 +54,7 @@ class ProductsListView(ListAPIView):
         this functin return list of products
         but
         in this way we check discount time is valid if valid we send with product list
-        if not valid we send 0 in discunt_after_price field (means we dont have any discunt)
+        if it doesn't valid we send 0 in discount_after_price field (means we dont have any discunt)
         """
         now = timezone.now().date()
         products = Product.objects.filter(available=True)
@@ -94,6 +83,11 @@ class ProductDetaiView(APIView):
             return Response(status=404)
         serializer = serializers.ProductsSerializer(product, context={'request': request})
         return Response(serializer.data)
+
+
+class ProductsListView(ListAPIView):
+    queryset = Product.objects.filter(available=True)
+    serializer_class = serializers.ProductsSerializer
 
 
 class ProductByCategory(APIView):
