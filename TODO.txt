@@ -9,3 +9,7 @@
 [x]-read ip address and find location
 [x]-update and delete product view
 [x]-add news models and views ...
+[]-add user new roll (oprator)
+[]-pdf upload for products
+[]-new user fields for validation from company
+[]-if we can refactor discunt code in list view 
