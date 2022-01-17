@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('discunt_add/', views.DiscuntCreate.as_view(), name='discunt_create'),
+    path('discount_create/', views.DiscountCreateView.as_view(), name='discount_create'),
+    path('discount_update/<int:pk>/', views.DiscountUpdateView.as_view(), name='discount_create'),
 ]

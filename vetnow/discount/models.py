@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
 from product.models import Product
+import jdatetime
 
 
 class Discount(models.Model):
@@ -23,6 +24,17 @@ def update_discount_price_in_products(sender, instance, action, reverse, *args, 
             pr.price_after_discount = pr.price - (1 / 100) * percent * pr.price
             pr.save()
 
+
+# when save instance we conver shamsi to miladi
+@receiver(pre_save, sender=Discount)
+def update_date(sender, instance, *args, **kwargs):
+    date_from = instance.valid_from
+    date_to = instance.valid_to
+    valid_from_ = jdatetime.date(year=date_from.year, month=date_from.month, day=date_from.day).togregorian()
+    valid_to_ = jdatetime.date(year=date_to.year, month=date_to.month, day=date_to.day).togregorian()
+
+    instance.valid_from = valid_from_
+    instance.valid_to = valid_to_
 
 # this is when updated obj
 @receiver(post_save, sender=Discount)
