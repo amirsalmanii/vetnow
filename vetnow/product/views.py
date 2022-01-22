@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from .models import Category, Product
 from . import serializers
 
@@ -47,7 +48,9 @@ class ProductsListPaginationView(ListAPIView):
     see get_queryset func document
     """
     serializer_class = serializers.ProductsSerializer
-    pagination_class = MyPagination    
+    pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'descreption']
 
     def get_queryset(self):
         """
@@ -72,7 +75,6 @@ class ProductsListPaginationView(ListAPIView):
                     # we can set value to 0
                     pr.price_after_discount = 0
                     pr.save()
-                    print('yessssssssss')
         return products
 
 
