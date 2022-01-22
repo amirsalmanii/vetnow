@@ -93,3 +93,9 @@ class UserListView(ListAPIView):
 class UserCreateView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserCreateSerializer
+
+
+class UsersCountView(APIView):
+    def get(self, request):
+        users = User.objects.all().count()
+        return Response({'users_count': users}, status=200)
