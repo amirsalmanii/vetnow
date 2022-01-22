@@ -16,7 +16,7 @@ class UserSerilizer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'state')
+        fields = "__all__"
 
 
 class OrdersSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class OrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        exclude = ('owner', 'product')

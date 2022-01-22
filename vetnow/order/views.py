@@ -1,20 +1,50 @@
+from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from . import serializers
 from .models import Order
-from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
 
-class OrdersView(APIView):
-    def get(self, request):
+class MyPagination(PageNumberPagination):
+    page_size = 2
+
+
+class OrdersView(ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrdersSerializer
+    pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['order_id']
+
+
+class OrderUpdateView(APIView):
+    def get(self, request, pk):
         try:
-            orders = Order.objects.all()
+            order = Order.objects.get(id=pk)
         except:
             return Response(status=404)
-        serializer = serializers.OrdersSerializer(orders, many=True)
-        return Response(serializer.data)
+        else:
+            serializer = serializers.OrdersSerializer(order)
+            return Response(serializer.data)
+
+    def put(self, request, pk):
+        try:
+            order = Order.objects.get(id=pk)
+        except:
+            return Response(status=404)
+        else:
+            serializer = serializers.OrderUpdateSerializer(instance=order, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=200)
+            else:
+                return Response(serializer.errors)
 
 
 class UserOrdersView(APIView):
@@ -28,12 +58,13 @@ class UserOrdersView(APIView):
         return Response(serializer.data)
 
 
-class OrdersRefundCountView(APIView):
+class OrdersStatusCountView(APIView):
     """
-    return all orders count if status is refund
+    return all orders count if status is refund or ...
     """
     def get(self, request):
         orders_refund_counts = Order.objects.filter(payment_status='r').count()
-        return Response({"refunds_count": orders_refund_counts}, status=200)
+        orders_pending_ounts = Order.objects.filter(payment_status='p', confirmation=False).count()
+        return Response({"refunds_count": orders_refund_counts, 'pending_orders': orders_pending_ounts}, status=200)
 
 

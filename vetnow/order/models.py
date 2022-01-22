@@ -22,7 +22,9 @@ class Order(models.Model):
     amount = models.BigIntegerField(null=True, blank=True)
     payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=20)
     payment_date = models.DateTimeField(blank=True, null=True)
+    confirmation = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    created = models.DateField(auto_now_add=True)
     order_id = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
