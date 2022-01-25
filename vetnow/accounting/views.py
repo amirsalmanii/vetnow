@@ -102,42 +102,48 @@ class ComputeGainPerMonthAutoView(APIView):
         else:
             pass
 
+        # for knowing we are in 1400 or 1401 and etc...
+        date_to_ir_update = datetime.datetime.now()
+        year_ = date_to_ir_update.year
+        month_ = date_to_ir_update.month
+        day_ = date_to_ir_update.day
 
-        farvardin_s = jdatetime.date(1400, 1, 1).togregorian()
-        farvardin_e = jdatetime.date(1400, 1, 31).togregorian()
+        year_ = jdatetime.date.fromgregorian(year=year_, month=month_, day=day_).year
+        farvardin_s = jdatetime.date(year_, 1, 1).togregorian()
+        farvardin_e = jdatetime.date(year_, 1, 31).togregorian()
 
-        ordibehesht_s = jdatetime.date(1400, 2, 1).togregorian()
-        ordibehesht_e = jdatetime.date(1400, 2, 31).togregorian()
+        ordibehesht_s = jdatetime.date(year_, 2, 1).togregorian()
+        ordibehesht_e = jdatetime.date(year_, 2, 31).togregorian()
 
-        khordad_s = jdatetime.date(1400, 3, 1).togregorian()
-        khordad_e = jdatetime.date(1400, 3, 31).togregorian()
+        khordad_s = jdatetime.date(year_, 3, 1).togregorian()
+        khordad_e = jdatetime.date(year_, 3, 31).togregorian()
 
-        tir_s = jdatetime.date(1400, 4, 1).togregorian()
-        tir_e = jdatetime.date(1400, 4, 31).togregorian()
+        tir_s = jdatetime.date(year_, 4, 1).togregorian()
+        tir_e = jdatetime.date(year_, 4, 31).togregorian()
 
-        mordad_s = jdatetime.date(1400, 5, 1).togregorian()
-        mordad_e = jdatetime.date(1400, 5, 31).togregorian()
+        mordad_s = jdatetime.date(year_, 5, 1).togregorian()
+        mordad_e = jdatetime.date(year_, 5, 31).togregorian()
 
-        sharivar_s = jdatetime.date(1400, 6, 1).togregorian()
-        sharivar_e = jdatetime.date(1400, 6, 31).togregorian()
+        sharivar_s = jdatetime.date(year_, 6, 1).togregorian()
+        sharivar_e = jdatetime.date(year_, 6, 31).togregorian()
 
-        mehr_s = jdatetime.date(1400, 7, 1).togregorian()
-        mehr_e = jdatetime.date(1400, 7, 30).togregorian()
+        mehr_s = jdatetime.date(year_, 7, 1).togregorian()
+        mehr_e = jdatetime.date(year_, 7, 30).togregorian()
 
-        aban_s = jdatetime.date(1400, 8, 1).togregorian()
-        aban_e = jdatetime.date(1400, 8, 30).togregorian()
+        aban_s = jdatetime.date(year_, 8, 1).togregorian()
+        aban_e = jdatetime.date(year_, 8, 30).togregorian()
 
-        azar_s = jdatetime.date(1400, 9, 1).togregorian()
-        azar_e = jdatetime.date(1400, 9, 30).togregorian()
+        azar_s = jdatetime.date(year_, 9, 1).togregorian()
+        azar_e = jdatetime.date(year_, 9, 30).togregorian()
 
-        dey_s = jdatetime.date(1400, 10, 1).togregorian()
-        dey_e = jdatetime.date(1400, 10, 30).togregorian()
+        dey_s = jdatetime.date(year_, 10, 1).togregorian()
+        dey_e = jdatetime.date(year_, 10, 30).togregorian()
 
-        bahman_s = jdatetime.date(1400, 11, 1).togregorian()
-        bahman_e = jdatetime.date(1400, 11, 30).togregorian()
+        bahman_s = jdatetime.date(year_, 11, 1).togregorian()
+        bahman_e = jdatetime.date(year_, 11, 30).togregorian()
 
-        esfand_s = jdatetime.date(1400, 12, 1).togregorian()
-        esfand_e = jdatetime.date(1400, 12, esf_end_day).togregorian()
+        esfand_s = jdatetime.date(year_, 12, 1).togregorian()
+        esfand_e = jdatetime.date(year_, 12, esf_end_day).togregorian()
 
 
         farvardin = Order.objects.filter(payment_status='p', created__gte=farvardin_s, created__lte=farvardin_e).aggregate(Sum('amount'))
