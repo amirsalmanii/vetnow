@@ -166,19 +166,19 @@ class ComputeGainPerMonthAutoView(APIView):
 
 
         return Response({
-            "farvardin": farvardin,
-            "ordibehesht": ordibehesht,
-            "khordad": khordad,
-            "tir": tir,
-            "mordad": mordad,
-            "sharivar": sharivar,
-            "mehr": mehr,
-            "aban": aban,
-            "azar": azar,
+            "farvardin": {'amount__sum': 25000000},
+            "ordibehesht": {'amount__sum': 250000},
+            "khordad": {'amount__sum': 25000000},
+            "tir": {'amount__sum': 250000},
+            "mordad": {'amount__sum': 25000000},
+            "sharivar": {'amount__sum': 25000000},
+            "mehr": {'amount__sum': 20000000},
+            "aban": {'amount__sum': 30000000},
+            "azar": {'amount__sum': 3000000},
             "dey": dey,
-            "bahman": bahman,
-            "esfand": esfand
-            }, status=200)
+            "bahman": {'amount__sum': 30000000},
+            "esfand": {'amount__sum': 30000000}
+            }, status=200) # TODO change this datas this is just for test
 
 
 class AllOdersCountView(APIView):
@@ -205,8 +205,10 @@ class TotalCategoryGainsView(APIView):
         for pr in products_in_orders:
             all_products_in_orders_company_price += (pr.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
 
-
-        result = total_amounts_of_orders - all_products_in_orders_company_price
+        try:
+            result = total_amounts_of_orders - all_products_in_orders_company_price
+        except:
+            result = 0
         # send total gain and send total amounts(total sells)
         return Response({"total_gain": result, "total_sells": total_amounts_of_orders}, status=200)
 
