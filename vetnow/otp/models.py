@@ -20,4 +20,7 @@ class UserOtp(models.Model):
     objects = OtpManager()
 
     def __str__(self):
-        return self.phone_number
+        return f'{self.id} -- {self.phone_number}'
+    
+    class Meta:
+        ordering = ('-id',)
