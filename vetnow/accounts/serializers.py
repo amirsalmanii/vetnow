@@ -27,14 +27,13 @@ class OtpConfirmSerializer(serializers.Serializer):
         """
         Check that password is correct . or time is valid (less then 2 min) and delete it
         """
-
         otp_obj = UserOtp.objects.filter(key=data['key'])
         if otp_obj:
             otp_obj = otp_obj.first()
 
             # compute the (datatime created + 2 min) is lower than when requested password now
             create_time = otp_obj.created_at
-            create_time_plus_2_min = timedelta(minutes=2) + create_time
+            create_time_plus_2_min = timedelta(minutes=3) + create_time
             now = timezone.now()
             if now > create_time_plus_2_min:
                 otp_obj.delete()
@@ -45,7 +44,7 @@ class OtpConfirmSerializer(serializers.Serializer):
             else:
                 raise serializers.ValidationError('رمز وارد شده اشتباه می باشد')
         else:
-            pass  # alwase we have key because backend sent to front end correctly.
+            raise serializers.ValidationError('کلیدی نیست')  # alwase we have key because backend sent to front end correctly.
 
 
 class UserRegisterSerilizer(serializers.Serializer):

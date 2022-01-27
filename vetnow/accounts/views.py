@@ -38,20 +38,21 @@ class UserVerifyAndOtp(APIView):
         return Response(serializer.errors, status=404)
 
 
-class UserConfirmOtp(APIView):
+class UserConfirmOtp(APIView): 
     def post(self, request):
         serializer = serializers.OtpConfirmSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
             user = User.objects.get(username=data['phone_number'])
             token = Token.objects.filter(user=user)
-            UserOtp.objects.get(phone_number=user).delete()
+            otps = UserOtp.objects.filter(phone_number=user).delete()
             if token:
                 token = token.first()
                 return Response({"token": token.key}, status=200)
             token = Token.objects.create(user=user)
             return Response({"token": token.key}, status=200)
-        return Response(serializer.errors, status=404)
+        else:
+            return Response(serializer.errors, status=404)
 
 
 class UserRegisterView(APIView):
