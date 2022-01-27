@@ -182,7 +182,7 @@ class ComputeGainPerMonthAutoView(APIView):
             "aban": {'amount__sum': 30000000},
             "azar": {'amount__sum': 3000000},
             "dey": dey,
-            "bahman": {'amount__sum': 30000000},
+            "bahman": bahman,
             "esfand": {'amount__sum': 30000000}
             }, status=200) # TODO change this datas this is just for test
 

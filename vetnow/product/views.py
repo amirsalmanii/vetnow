@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from .models import Category, Product
 from . import serializers
+from accounts import permissions
 
 
 class MyPagination(PageNumberPagination):
@@ -16,6 +17,7 @@ class CategoriesWithPaginationView(ListAPIView):
     queryset = Category.objects.filter()# parent__isnull=True
     serializer_class = serializers.CategoriesSerializer
     pagination_class = MyPagination
+    permission_classes = (permissions.AdminOrEmployee,)
 
 
 class CategoriesListView(ListAPIView):
