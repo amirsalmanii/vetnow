@@ -13,12 +13,15 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=150, null=True, blank=True)
     avatar = models.ImageField(upload_to='users/%Y/%m/', null=True, blank=True)
     national_code = models.CharField(max_length=10, null=True, blank=True)
+    national_code_image = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
     job = models.CharField(max_length=150, null=True, blank=True)
     graduate = models.CharField(max_length=150, null=True, blank=True)
     experience = models.CharField(max_length=20, null=True, blank=True)
     doctorDescreption = models.TextField(null=True, blank=True)
     doctorId = models.CharField(max_length=100, null=True, blank=True)
-
+    # mojavez ha
+    Incubation_license = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
+    other = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
     # for address
     state = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)
