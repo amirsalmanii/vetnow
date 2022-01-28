@@ -3,16 +3,12 @@ from datetime import date
 from datetime import datetime
 from io import BytesIO
 from random import randrange
-
 from PIL import Image
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
-
 from .managers import ProductExistManager
 
 User = settings.AUTH_USER_MODEL
@@ -98,9 +94,11 @@ class Product(models.Model):
     company_price = models.BigIntegerField(default=0)
     manufacturer_company = models.CharField(max_length=120, null=True, blank=True)
     quantity = models.PositiveBigIntegerField(default=0)
-    like_count = models.BigIntegerField(default=0, null=True, blank=True)
     material = models.CharField(max_length=100, null=True, blank=True)
     objects = ProductExistManager()
+
+    class Meta:
+        ordering = ('-id',)
 
     def __str__(self):
         return self.name
@@ -153,24 +151,3 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product:product_detail', args=[self.slug])
-
-
-class LikeProduct(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes', null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='likesp')
-    liked = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.user} liked {self.product.name}'
-
-
-@receiver(post_save, sender=LikeProduct)
-def product_liked_count_update(sender, instance, **kwargs):
-    product = instance.product
-    if not instance.liked:
-        product.like_count += 1
-        product.save()
-        instance.liked = True
-        instance.save()
-    else:
-        pass
