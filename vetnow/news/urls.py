@@ -8,4 +8,5 @@ urlpatterns = [
     path('news/detail/<str:slug>/', views.NewsDetailView.as_view(), name='news_detail'),
     path('news/update/<str:slug>/', views.NewsUpdateView.as_view(), name='news_update'),
     path('news/delete/<str:slug>/', views.NewsDeleteView.as_view(), name='news_delete'),
+    path('admin/user/list/', views.AdminUserListView.as_view(), name='admins_list'),
 ]
