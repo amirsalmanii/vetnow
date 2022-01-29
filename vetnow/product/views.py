@@ -6,7 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from .models import Category, Product
 from . import serializers
-from accounts import permissions
+from rest_framework.permissions import IsAdminUser
 
 
 class MyPagination(PageNumberPagination):
@@ -17,7 +17,7 @@ class CategoriesWithPaginationView(ListAPIView):
     queryset = Category.objects.filter()# parent__isnull=True
     serializer_class = serializers.CategoriesSerializer
     pagination_class = MyPagination
-    permission_classes = (permissions.AdminOrEmployee,)
+    # permission_classes = (permissions.AdminOrEmployee,)
 
 
 class CategoriesListView(ListAPIView):
@@ -28,12 +28,14 @@ class CategoriesListView(ListAPIView):
 class CreateCategory(CreateAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategoryAddAndUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
 
 class UpdateCategory(RetrieveUpdateAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategoryAddAndUpdateSerializer
     lookup_field = "slug"
+    permission_classes = (IsAdminUser,)
 
 
 class DeleteCategory(DestroyAPIView):
@@ -43,6 +45,7 @@ class DeleteCategory(DestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategoryAddAndUpdateSerializer
     lookup_field = 'slug'
+    permission_classes = (IsAdminUser,)
 
 
 class ProductsListPaginationView(ListAPIView):
@@ -62,7 +65,7 @@ class ProductsListPaginationView(ListAPIView):
         if it doesn't valid we send 0 in discount_after_price field (means we dont have any discunt)
         """
         now = timezone.now().date()
-        products = Product.objects.filter(available=True)
+        products = Product.objects.filter()
         for pr in products:
             if pr.price_after_discount > 0:
                 if pr.pdiscount.all():
@@ -90,7 +93,7 @@ class ProductDetaiView(APIView):
 
 
 class ProductsListView(ListAPIView):
-    queryset = Product.objects.filter(available=True)
+    queryset = Product.objects.filter()
     serializer_class = serializers.ProductsSerializer
 
 
@@ -106,6 +109,8 @@ class ProductByCategory(APIView):
 
 
 class ProductDelete(APIView):
+    permission_classes = (IsAdminUser,)
+
     def delete(self, request, slug):
         product = Product.objects.is_exist_product(slug)
         if product:
@@ -120,8 +125,10 @@ class ProductUpdate(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     lookup_field = "slug"
     serializer_class = serializers.ProductUpdateSerializer
+    permission_classes = (IsAdminUser,)
 
 
 class ProductCreate(CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductUpdateSerializer
+    permission_classes = (IsAdminUser,)
