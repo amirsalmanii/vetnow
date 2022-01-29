@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAdminUser
 from . import serializers
 from rest_framework.response import Response
 from otp.models import UserOtp
@@ -8,6 +9,8 @@ from django.conf import settings
 from rest_framework.authtoken.models import Token
 from .models import User
 from rest_framework.pagination import PageNumberPagination
+from ip2geotools.databases.noncommercial import DbIpCity
+from accounts.models import IpTables
 
 
 class MyPagination(PageNumberPagination):
@@ -70,6 +73,7 @@ class UserRegisterView(APIView):
 
 
 class UserUpdateView(APIView):
+    permission_classes = (IsAdminUser,)
     def get(self, request, pk):
         user = User.objects.get(id=pk)
         serializer = serializers.UserListSerializer(user, context={'request': request})
@@ -86,12 +90,14 @@ class UserUpdateView(APIView):
 
 
 class UserListView(ListAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = User.objects.all()
     serializer_class = serializers.UserListSerializer
     pagination_class = MyPagination
     
 
 class UserCreateView(CreateAPIView):
+    permission_classes = (IsAdminUser,)
     queryset = User.objects.all()
     serializer_class = serializers.UserCreateSerializer
 
@@ -100,3 +106,32 @@ class UsersCountView(APIView):
     def get(self, request):
         users = User.objects.all().count()
         return Response({'users_count': users}, status=200)
+
+
+class IsAdmin(APIView):
+    def get(self, request):
+        # get user ip
+        # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        # if x_forwarded_for:
+        #     ip = x_forwarded_for.split(',')[0]
+        # else:
+        #     ip = request.META.get('REMOTE_ADDR')
+        #
+        # # get user city
+        # exist = IpTables.objects.filter(ip=ip)
+        # if not exist:
+        #     try:
+        #         response = DbIpCity.get(ip, api_key='free')
+        #         IpTables.objects.create(ip=ip, city=response.city)
+        #     except:
+        #         pass
+        # else:
+        #     pass
+        user = request.user
+        if user.is_authenticated:
+            if user.is_admin:
+                return Response({'is_admin': True}, status=200)
+            else:
+                return Response({'is_admin': False}, status=200)
+        else:
+            return Response({'login': False})

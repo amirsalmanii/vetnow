@@ -10,4 +10,5 @@ urlpatterns = [
     path('users/list/', views.UserListView.as_view(), name='users_list'),
     path('user/create/', views.UserCreateView.as_view(), name='user_create'),
     path('users/count/', views.UsersCountView.as_view(), name='user_count'),
+    path('check/user/per/', views.IsAdmin.as_view(), name='user_check'),
 ]
