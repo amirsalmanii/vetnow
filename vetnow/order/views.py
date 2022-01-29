@@ -47,17 +47,6 @@ class OrderUpdateView(APIView):
                 return Response(serializer.errors)
 
 
-class UserOrdersView(APIView):
-    def get(self, request, pk):
-        try:
-            user = User.objects.get(id=pk)
-            orders = user.orders.all()
-        except:
-            return Response(status=404)
-        serializer = serializers.OrdersSerializer(orders, many=True)
-        return Response(serializer.data)
-
-
 class OrdersStatusCountView(APIView):
     """
     return all orders count if status is refund or ...
@@ -82,3 +71,17 @@ class RefundOrderRequestDetailView(RetrieveAPIView):
 class RefundOrderRequestUpdateView(UpdateAPIView):
     queryset = RefundOrdersRequest.objects.all()
     serializer_class = serializers.OrderRefundUpdateSerializer
+
+
+# ################users orders request
+
+
+class UserOrdersView(APIView):
+    def get(self, request):
+        try:
+            user = request.user
+            orders = user.orders.all()
+        except:
+            return Response(status=404)
+        serializer = serializers.OrdersSerializer(orders, many=True)
+        return Response(serializer.data)
