@@ -71,6 +71,9 @@ class UserUpdateSerilizer(serializers.ModelSerializer):
             "last_name",
             "avatar",
             "national_code",
+            "national_code_image",
+            "Incubation_license",
+            "other",
             "job",
             "graduate",
             "experience",
@@ -96,7 +99,6 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -108,6 +110,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "last_name",
             "avatar",
             "national_code",
+            "national_code_image",
+            "Incubation_license",
+            "other",
             "job",
             "graduate",
             "experience",

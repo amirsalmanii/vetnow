@@ -2,11 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.urls import reverse
 from django.utils.html import format_html
-
 from .managers import MyUserManager
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser): 
     username = models.CharField(max_length=11, unique=True)
     email = models.EmailField(max_length=150, null=True, blank=True)
     first_name = models.CharField(max_length=150, null=True, blank=True)
