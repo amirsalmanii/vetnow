@@ -5,7 +5,8 @@ from . import serializers
 from rest_framework.response import Response
 from otp.models import UserOtp
 from kavenegar import *
-from django.conf import settings
+# from django.conf import settings
+from config import secret
 from rest_framework.authtoken.models import Token
 from .models import User
 from rest_framework.pagination import PageNumberPagination
@@ -24,7 +25,7 @@ class UserVerifyAndOtp(APIView):
             data = serializer.validated_data
             otp_obj = UserOtp.objects.save_data_otp(data)
             try:
-                api = KavenegarAPI(settings.API_KEY)
+                api = KavenegarAPI(secret.K_API_KEY)
                 msg = str(otp_obj.password) + '----کد را برای احراز هویت وارد کنید----'
                 params = {
                     'sender': '',  # optional
@@ -110,23 +111,6 @@ class UsersCountView(APIView):
 
 class IsAdmin(APIView):
     def get(self, request):
-        # get user ip
-        # x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        # if x_forwarded_for:
-        #     ip = x_forwarded_for.split(',')[0]
-        # else:
-        #     ip = request.META.get('REMOTE_ADDR')
-        #
-        # # get user city
-        # exist = IpTables.objects.filter(ip=ip)
-        # if not exist:
-        #     try:
-        #         response = DbIpCity.get(ip, api_key='free')
-        #         IpTables.objects.create(ip=ip, city=response.city)
-        #     except:
-        #         pass
-        # else:
-        #     pass
         user = request.user
         if user.is_authenticated:
             if user.is_admin:
@@ -135,3 +119,29 @@ class IsAdmin(APIView):
                 return Response({'is_admin': False}, status=200)
         else:
             return Response({'login': False})
+
+
+class UserDetailForUserProfileView(APIView):
+    def get(self, request):
+        username = request.user
+        try:
+            user = User.objects.get(username=username)
+        except:
+            return Response("user not found", status=404)
+        else:
+            serializer = serializers.UserProfileUpdate(user, context={'request': request})
+            return Response(serializer.data, status=200)
+    
+    def put(self, request):
+        username = request.user
+        try:
+            user = User.objects.get(username=username)
+        except:
+            return Response("user not found", status=404)
+        else:
+            serializer = serializers.UserProfileUpdate(instance=user, data=request.data, context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=200)
+            else:
+                return Response(serializer.errors, status=400)

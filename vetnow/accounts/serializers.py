@@ -129,3 +129,33 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "full_name",
             "phone_number",
         )
+
+
+class UserProfileUpdate(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "avatar",
+            "national_code",
+            "national_code_image",
+            "Incubation_license",
+            "other",
+            "job",
+            "graduate",
+            "experience",
+            "doctorDescreption",
+            "doctorId",
+            # address fields
+            "state",
+            "city",
+            "address",
+            "plate",
+            "zip_code",
+            "full_name",
+            "phone_number",
+        )
