@@ -48,13 +48,17 @@ class UserConfirmOtp(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             user = User.objects.get(username=data['phone_number'])
+            if user.is_admin:
+                admin=True
+            else:
+                admin=False
             token = Token.objects.filter(user=user)
             otps = UserOtp.objects.filter(phone_number=user).delete()
             if token:
                 token = token.first()
-                return Response({"token": token.key}, status=200)
-            token = Token.objects.create(user=user)
-            return Response({"token": token.key}, status=200)
+            else:
+                token = Token.objects.create(user=user)
+            return Response({"token": token.key, 'admin': admin}, status=200)
         else:
             return Response(serializer.errors, status=404)
 

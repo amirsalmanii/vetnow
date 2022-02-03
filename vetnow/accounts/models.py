@@ -13,6 +13,7 @@ class User(AbstractBaseUser):
     avatar = models.ImageField(upload_to='users/%Y/%m/', null=True, blank=True)
     national_code = models.CharField(max_length=10, null=True, blank=True)
     national_code_image = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
+    wallet = models.PositiveBigIntegerField(default=0)
     job = models.CharField(max_length=150, null=True, blank=True)
     graduate = models.CharField(max_length=150, null=True, blank=True)
     experience = models.CharField(max_length=20, null=True, blank=True)
