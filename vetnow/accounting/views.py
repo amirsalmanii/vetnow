@@ -2,91 +2,17 @@ import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from product.models import Category, Product
-from order.models import Order
+from order.models import Order, OrderItems
 from django.db.models import Sum
 from .serializers import DateSerilizer
 import jdatetime
 from datetime import date
 
 
-class ComputeGain(APIView):
-    """
-    this class 
-    get category by slug and find all product with this category in order then:
-    compute all company_price and amount and assing to total prices and use (total_price - total_comapny_price)
-    and send to front_end
-    """
-    def get(self, request, slug):
-        category = Category.objects.filter(slug=slug)
-        if category:
-            category = category.first()
-        else:
-            return Response(status=404)
-
-        products = category.products.all()
-        orders = []
-        total_amount = 0
-        total_company_price = 0
-        for p in products:
-            orders += p.orders_p.filter(payment_status='p')
-        for order in orders:
-            total_amount += order.amount
-            total_company_price += (order.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
-        # print(total_company_price)
-        # print(total_amount)
-        gain_ = total_amount - total_company_price
-        return Response({"gains": gain_}, status=200)
-
-
-class ComputeGainWithTime(APIView):
-    """
-    Like above class just we show gains with date
-    this class 
-    get category by slug and find all product with this category in order then:
-    compute all company_price and amount and assing to total prices and use (total_price - total_comapny_price)
-    and send to front_end
-    """
-
-    def post(self, request):
-        serializer = DateSerilizer(data=request.data)
-        if serializer.is_valid():
-            # change miladi to shamsi for filtering
-            slug = serializer.validated_data.get('slug')
-            data_start = serializer.validated_data.get('date_start')
-            data_start = data_start.split('-')
-            data_end = serializer.validated_data.get('date_end')
-            data_end = data_end.split('-')
-
-            data_start = [int(times) for times in data_start]
-            data_end = [int(times) for times in data_end]
-        else:
-            return Response(serializer.errors, status=400)
-
-
-        date_start = (jdatetime.date(data_start[0], data_start[1], data_start[2]).togregorian())
-        date_end = jdatetime.date(data_end[0], data_end[1], data_end[2]).togregorian()
-
-
-        category = Category.objects.filter(slug=slug)
-        if category:
-            category = category.first()
-        else:
-            return Response(status=404)
-
-        products = category.products.all()
-        orders = []
-        total_amount = 0
-        total_company_price = 0
-        for p in products:
-            orders += p.orders_p.filter(payment_status='p', payment_date__gte=(date(date_start.year,date_start.month,date_start.day)), payment_date__lte=(date(date_end.year, date_end.month, date_end.day)))
-        for order in orders:
-            total_amount += order.amount
-            total_company_price += (order.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
-        gain_ = total_amount - total_company_price
-        return Response({"gains": gain_, "total_sells_per_month": total_amount}, status=200)
-
-
 class ComputeGainPerMonthAutoView(APIView):
+    """
+    compute sells per month ans send to frontend charts
+    """
 
     def get(self, request):
         esf_end_day = 29
@@ -145,31 +71,39 @@ class ComputeGainPerMonthAutoView(APIView):
         esfand_s = jdatetime.date(year_, 12, 1).togregorian()
         esfand_e = jdatetime.date(year_, 12, esf_end_day).togregorian()
 
+        farvardin = Order.objects.filter(payment_status='p', created__gte=farvardin_s,
+                                         created__lte=farvardin_e).aggregate(Sum('amount'))
 
-        farvardin = Order.objects.filter(payment_status='p', created__gte=farvardin_s, created__lte=farvardin_e).aggregate(Sum('amount'))
+        ordibehesht = Order.objects.filter(payment_status='p', created__gte=ordibehesht_s,
+                                           created__lte=ordibehesht_e).aggregate(Sum('amount'))
 
-        ordibehesht = Order.objects.filter(payment_status='p', created__gte=ordibehesht_s, created__lte=ordibehesht_e).aggregate(Sum('amount'))
-
-        khordad = Order.objects.filter(payment_status='p', created__gte=khordad_s, created__lte=khordad_e).aggregate(Sum('amount'))
+        khordad = Order.objects.filter(payment_status='p', created__gte=khordad_s, created__lte=khordad_e).aggregate(
+            Sum('amount'))
 
         tir = Order.objects.filter(payment_status='p', created__gte=tir_s, created__lte=tir_e).aggregate(Sum('amount'))
 
-        mordad = Order.objects.filter(payment_status='p', created__gte=mordad_s, created__lte=mordad_e).aggregate(Sum('amount'))
+        mordad = Order.objects.filter(payment_status='p', created__gte=mordad_s, created__lte=mordad_e).aggregate(
+            Sum('amount'))
 
-        sharivar = Order.objects.filter(payment_status='p', created__gte=sharivar_s, created__lte=sharivar_e).aggregate(Sum('amount'))
+        sharivar = Order.objects.filter(payment_status='p', created__gte=sharivar_s, created__lte=sharivar_e).aggregate(
+            Sum('amount'))
 
-        mehr = Order.objects.filter(payment_status='p', created__gte=mehr_s, created__lte=mehr_e).aggregate(Sum('amount'))
+        mehr = Order.objects.filter(payment_status='p', created__gte=mehr_s, created__lte=mehr_e).aggregate(
+            Sum('amount'))
 
-        aban = Order.objects.filter(payment_status='p', created__gte=aban_s, created__lte=aban_e).aggregate(Sum('amount'))
+        aban = Order.objects.filter(payment_status='p', created__gte=aban_s, created__lte=aban_e).aggregate(
+            Sum('amount'))
 
-        azar = Order.objects.filter(payment_status='p', created__gte=azar_s, created__lte=azar_e).aggregate(Sum('amount'))
+        azar = Order.objects.filter(payment_status='p', created__gte=azar_s, created__lte=azar_e).aggregate(
+            Sum('amount'))
 
         dey = Order.objects.filter(payment_status='p', created__gte=dey_s, created__lte=dey_e).aggregate(Sum('amount'))
 
-        bahman = Order.objects.filter(payment_status='p', created__gte=bahman_s, created__lte=bahman_e).aggregate(Sum('amount'))
+        bahman = Order.objects.filter(payment_status='p', created__gte=bahman_s, created__lte=bahman_e).aggregate(
+            Sum('amount'))
 
-        esfand = Order.objects.filter(payment_status='p', created__gte=esfand_s, created__lte=esfand_e).aggregate(Sum('amount'))
-
+        esfand = Order.objects.filter(payment_status='p', created__gte=esfand_s, created__lte=esfand_e).aggregate(
+            Sum('amount'))
 
         return Response({
             "farvardin": {'amount__sum': 25000000},
@@ -184,7 +118,7 @@ class ComputeGainPerMonthAutoView(APIView):
             "dey": dey,
             "bahman": bahman,
             "esfand": {'amount__sum': 30000000}
-            }, status=200) # TODO change this datas this is just for test
+        }, status=200)  # TODO change this datas this is just for test
 
 
 class AllOdersCountView(APIView):
@@ -196,27 +130,76 @@ class AllOdersCountView(APIView):
         return Response({"all": orders}, status=200)
 
 
-class TotalCategoryGainsView(APIView):
+class ComputeGain(APIView):
     """
-    find total orders amounts
-    and find company price of orders products
-    and subtracts these numbers
+    compute gains per month with filtering category
     """
-    def get(self, request):
-        total_amounts_of_orders = (Order.objects.filter(payment_status='p').aggregate(Sum('amount'))).get('amount__sum')
+    def get(self, request, slug):
+        category = Category.objects.filter(slug=slug)
+        if category:
+            category = category.first()
+        else:
+            return Response(status=404)
 
-        # Addition products company price in orders
-        products_in_orders = Order.objects.filter(payment_status='p')
-        all_products_in_orders_company_price = 0
-        for pr in products_in_orders:
-            all_products_in_orders_company_price += (pr.product.all().aggregate(Sum('company_price'))).get('company_price__sum')
+        orders_item = OrderItems.objects.filter(product__categories=category)
+        total_f = orders_item.aggregate(Sum('total_amount'))['total_amount__sum']
+        total_c = orders_item.aggregate(Sum('total_c_price'))['total_c_price__sum']
+        result = total_f - total_c
+        return Response({"gains": result}, status=200)
 
+
+class ComputeGainWithTime(APIView):
+    """
+    compute gains and sells per entered dates with filtering category
+    """
+    def post(self, request):
+        serializer = DateSerilizer(data=request.data)
+        if serializer.is_valid():
+            # change miladi to shamsi for filtering
+            slug = serializer.validated_data.get('slug')
+            data_start = serializer.validated_data.get('date_start')
+            data_start = data_start.split('-')
+            data_end = serializer.validated_data.get('date_end')
+            data_end = data_end.split('-')
+
+            data_start = [int(times) for times in data_start]
+            data_end = [int(times) for times in data_end]
+        else:
+            return Response(serializer.errors, status=400)
+
+        date_start = (jdatetime.date(data_start[0], data_start[1], data_start[2]).togregorian())
+        date_end = jdatetime.date(data_end[0], data_end[1], data_end[2]).togregorian()
+
+        category = Category.objects.filter(slug=slug)
+        if category:
+            category = category.first()
+        else:
+            return Response(status=404)
+
+        orders_item = OrderItems.objects.filter(product__categories=category,
+                                                created__gte=(date(date_start.year, date_start.month, date_start.day)),
+                                                created__lte=(date(date_end.year, date_end.month, date_end.day)))
+
+        total_f = orders_item.aggregate(Sum('total_amount'))['total_amount__sum']
+        total_c = orders_item.aggregate(Sum('total_c_price'))['total_c_price__sum']
         try:
-            result = total_amounts_of_orders - all_products_in_orders_company_price
+            result = total_f - total_c
         except:
             result = 0
-        # send total gain and send total amounts(total sells)
-        return Response({"total_gain": result, "total_sells": total_amounts_of_orders}, status=200)
+        return Response({"gains": result, "total_sells_per_month": total_f}, status=200)
 
 
+class TotalCategoryGainsView(APIView):
+    """
+    compute total gains in all categories
+    """
+    def get(self, request):
+        orders_item = OrderItems.objects.filter()
+        total_f = orders_item.aggregate(Sum('total_amount'))['total_amount__sum']
+        total_c = orders_item.aggregate(Sum('total_c_price'))['total_c_price__sum']
 
+        try:
+            result = total_f - total_c
+        except:
+            result = 0
+        return Response({"total_gain": result, "total_sells": total_f}, status=200)
