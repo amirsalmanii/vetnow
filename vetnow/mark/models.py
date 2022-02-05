@@ -11,3 +11,6 @@ class Mark(models.Model):
 
     def __str__(self):
         return f'{str(self.user)} marked {self.product}'
+    
+    class Meta:
+        ordering = ('-id',)
