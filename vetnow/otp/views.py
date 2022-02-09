@@ -1,6 +1,6 @@
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
-
+from . import serializers
 
 class TokenList(ListAPIView):
     """
