@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAdminUser
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 15
 
 
 class CategoriesWithPaginationView(ListAPIView):
