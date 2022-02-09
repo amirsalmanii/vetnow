@@ -24,10 +24,27 @@ class Order(models.Model):
     confirmation = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     created = models.DateField(auto_now_add=True)
-    order_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    order_id = models.UUIDField(default=uuid.uuid4)
 
     def __str__(self):
         return f'{str(self.owner)}'
+
+
+class OrderItems(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_item')
+    price = models.PositiveBigIntegerField()
+    c_price = models.PositiveBigIntegerField(null=True,blank=True)
+    total_c_price = models.PositiveBigIntegerField(null=True,blank=True)
+    quantity = models.PositiveIntegerField()
+    total_amount = models.PositiveBigIntegerField(null=True, blank=True)
+    order_id = models.UUIDField()
+    created = models.DateField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.c_price = self.product.company_price
+        self.total_c_price = self.product.company_price * self.quantity
+        self.total_amount = self.price * self.quantity
+        super(OrderItems, self).save(*args, **kwargs)
 
 
 @receiver(pre_save, sender=Order)

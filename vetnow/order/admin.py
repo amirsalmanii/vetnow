@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, RefundOrdersRequest
+from .models import Order, RefundOrdersRequest, OrderItems
 from django.contrib.admin import display
 
 
@@ -20,6 +20,11 @@ class OrderAdmin(admin.ModelAdmin):
         for p in products:
              list_of_pr_names.append(p.name)
         return list_of_pr_names
+
+
+@admin.register(OrderItems)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("product", "quantity", "order_id")
 
 
 admin.site.register(RefundOrdersRequest)
