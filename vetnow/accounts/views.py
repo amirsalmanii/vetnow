@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from . import serializers
 from rest_framework.response import Response
 from otp.models import UserOtp
@@ -114,6 +114,9 @@ class UsersCountView(APIView):
 
 
 class IsAdmin(APIView):
+    """
+    checker for user is admin or not for admin panel
+    """
     def get(self, request):
         user = request.user
         if user.is_authenticated:
@@ -126,6 +129,9 @@ class IsAdmin(APIView):
 
 
 class UserDetailForUserProfileView(APIView):
+    """
+    update owen profile information
+    """
     def get(self, request):
         username = request.user
         try:
@@ -146,6 +152,34 @@ class UserDetailForUserProfileView(APIView):
             serializer = serializers.UserProfileUpdate(instance=user, data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
+                return Response(serializer.data, status=200)
+            else:
+                return Response(serializer.errors, status=400)
+
+
+class UserWalletView(APIView):
+    """
+    update or read user wallet
+    """
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        wallet = request.user.wallet
+        return Response({'wallet': wallet})
+
+    def put(self, request):
+        username = request.user
+        try:
+            user = User.objects.get(username=username)
+        except:
+            return Response("user not found", status=404)
+        else:
+            serializer = serializers.UserWalletSerializer(instance=user, data=request.data)
+            if serializer.is_valid():
+                valid_data = serializer.validated_data['wallet']
+                valid_data += user.wallet
+                user.wallet = valid_data
+                user.save()
                 return Response(serializer.data, status=200)
             else:
                 return Response(serializer.errors, status=400)

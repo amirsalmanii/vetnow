@@ -159,3 +159,11 @@ class UserProfileUpdate(serializers.ModelSerializer):
             "full_name",
             "phone_number",
         )
+
+
+class UserWalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "wallet",
+        )
