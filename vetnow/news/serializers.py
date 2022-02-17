@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from .models import News
-from accounts.serializers import UserListSerializer
+from accounts.models import User
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
 
 
 class NewsSerializer(serializers.ModelSerializer):
