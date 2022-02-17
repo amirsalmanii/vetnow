@@ -18,6 +18,9 @@ class News(models.Model):
         self.slug = self.title.replace(' ', '-')
         # if not self.author:
         super(News, self).save(*args, **kwargs)
+    
+    class Meta:
+        ordering = ('-id',)
 
     def __str__(self):
         return self.title
