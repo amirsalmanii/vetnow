@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Category, Product
+from rest_framework.fields import CurrentUserDefault
+from mark.models import Mark
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -42,6 +44,21 @@ class CategoryProductSerializer(serializers.ModelSerializer):
 
 
 class ProductsSerializer(serializers.ModelSerializer):
+    is_fav = serializers.SerializerMethodField()
+
+    def get_is_fav(self, instance):
+        """
+        check this product fav of user or not
+        if fav send true else send false
+        """
+        user = self.context.get('request').user
+        try:
+            Mark.objects.get(user=user, product=instance)
+        except:
+            return False
+        else:
+            return True
+    
     categories = CategoryProductSerializer(many=True)
 
     class Meta:
