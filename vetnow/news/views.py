@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAdminUser
 from . import serializers
@@ -13,6 +15,13 @@ class NewsListView(ListAPIView):
     queryset = News.objects.all()
     serializer_class = serializers.NewsSerializer
     pagination_class = MyPagination
+
+
+class LastThreeNewsListView(APIView):
+    def get(self, request):
+        queryset = News.objects.all()[:3]
+        serializer = serializers.NewsSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=200)
 
 
 class NewsCreateView(CreateAPIView):
