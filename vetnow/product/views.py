@@ -21,7 +21,11 @@ class CategoriesWithPaginationView(ListAPIView):
 
 
 class CategoriesListView(ListAPIView):
-    queryset = Category.objects.filter()# parent__isnull=True
+    queryset = Category.objects.filter()
+    serializer_class = serializers.CategoriesSerializer
+
+class CategoriesForMainPageListView(ListAPIView):
+    queryset = Category.objects.filter(parent__isnull=True)
     serializer_class = serializers.CategoriesSerializer
 
 
@@ -97,15 +101,36 @@ class ProductsListView(ListAPIView):
     serializer_class = serializers.ProductsSerializer
 
 
-class ProductByCategory(APIView):
-    def get(self, request, slug):
+class ProductByCategory(ListAPIView):
+    serializer_class = serializers.ProductsSerializer
+
+    def get_queryset(self):
+        ##############################################################
+        # check discount validation
+        now = timezone.now().date()
+        products = Product.objects.filter()
+        for pr in products:
+            if pr.price_after_discount > 0:
+                if pr.pdiscount.all():
+                    # means we have discount object in discount model
+                    for discount in pr.pdiscount.all():
+                        # check discount date is valid
+                        if discount.valid_to < now:
+                            pr.price_after_discount = 0
+                            pr.save()
+                else:
+                    # means if this product dont have any discount object
+                    # we can set value to 0
+                    pr.price_after_discount = 0
+                    pr.save()
+        ##############################################################
+        slug = self.kwargs['slug']
         try:
             category = Category.objects.filter(slug=slug).first()
-            products = category.products.filter(available=True)
-            serializer = serializers.ProductsSerializer(products, many=True)
+            products = category.products.all()
         except:
-            return Response(status=404)
-        return Response(serializer.data, status=200)
+            return None
+        return products
 
 
 class ProductDelete(APIView):

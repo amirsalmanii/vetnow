@@ -5,6 +5,7 @@ app_name = 'product'
 urlpatterns = [
     path('pagination/categories/', views.CategoriesWithPaginationView.as_view(), name='send_categories_with_pagination'),
     path('categories/', views.CategoriesListView.as_view(), name='send_categories'),
+    path('categories/m/', views.CategoriesForMainPageListView.as_view(), name='send_categories_main_page'),
     path('category/create/', views.CreateCategory.as_view(), name='create_category'),
     path('category/update/<str:slug>/', views.UpdateCategory.as_view(), name='update_category'),
     path('category/delete/<str:slug>/', views.DeleteCategory.as_view(), name='update_category'),
