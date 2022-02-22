@@ -69,9 +69,13 @@ class UserRegisterView(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             username = data['phone_number']
-            user = User(username=username)
-            user.save()
-            token = Token.objects.create(user=user)
+            usr = User.objects.filter(username = username)
+            if not usr:
+                user = User(username=username)
+                user.save()
+                token = Token.objects.create(user=user)
+            else:
+                return Response('کاربر قبلا ثبت شده است', status=404)
             return Response({"token": token.key}, status=200)
         else:
             return Response(serializer.errors, status=401)
