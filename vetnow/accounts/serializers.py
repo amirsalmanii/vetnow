@@ -54,6 +54,8 @@ class UserRegisterSerilizer(serializers.Serializer):
         """
         check this number valid in iran system [valid number in iran --> 09148856432]
         """
+        if len(value) != 11:
+            raise serializers.ValidationError("شماره وارده استندارد نمی باشد")
         if '0' in value[0] and '9' in value[1]:
             return value
         else:
