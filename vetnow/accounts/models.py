@@ -7,29 +7,29 @@ from .managers import MyUserManager
 
 class User(AbstractBaseUser): 
     username = models.CharField(max_length=11, unique=True)
-    email = models.EmailField(max_length=150, null=True, blank=True)
-    first_name = models.CharField(max_length=150, null=True, blank=True)
-    last_name = models.CharField(max_length=150, null=True, blank=True)
-    avatar = models.ImageField(upload_to='users/%Y/%m/', null=True, blank=True)
-    national_code = models.CharField(max_length=10, null=True, blank=True)
-    national_code_image = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
+    email = models.EmailField(max_length=150, blank=True)
+    first_name = models.CharField(max_length=150, null=True, blank=True, default='')
+    last_name = models.CharField(max_length=150, null=True, blank=True, default='')
+    avatar = models.ImageField(upload_to='users/%Y/%m/', null=True, blank=True, default='')
+    national_code = models.CharField(max_length=10, null=True, blank=True, default='')
+    national_code_image = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True, default='')
     wallet = models.PositiveBigIntegerField(default=0)
-    job = models.CharField(max_length=150, null=True, blank=True)
-    graduate = models.CharField(max_length=150, null=True, blank=True)
-    experience = models.CharField(max_length=20, null=True, blank=True)
-    doctorDescreption = models.TextField(null=True, blank=True)
-    doctorId = models.CharField(max_length=100, null=True, blank=True)
+    job = models.CharField(max_length=150, null=True, blank=True, default='')
+    graduate = models.CharField(max_length=150, null=True, blank=True, default='')
+    experience = models.CharField(max_length=20, null=True, blank=True, default='')
+    doctorDescreption = models.TextField(null=True, blank=True, default='')
+    doctorId = models.CharField(max_length=100, null=True, blank=True, default='')
     # mojavez ha
-    Incubation_license = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
-    other = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True)
+    Incubation_license = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True, default='')
+    other = models.ImageField(upload_to='mojavezha/%Y/%m/', null=True, blank=True, default='')
     # for address
-    state = models.CharField(max_length=200, null=True, blank=True)
-    city = models.CharField(max_length=200, null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    plate = models.CharField(max_length=5, null=True, blank=True) # pelak khane
-    zip_code = models.CharField(max_length=10, null=True, blank=True)
-    full_name = models.CharField(max_length=255, null=True, blank=True)
-    phone_number = models.CharField(max_length=11, null=True, blank=True)
+    state = models.CharField(max_length=200, null=True, blank=True, default='')
+    city = models.CharField(max_length=200, null=True, blank=True, default='')
+    address = models.TextField(null=True, blank=True, default='')
+    plate = models.CharField(max_length=5, null=True, blank=True, default='') # pelak khane
+    zip_code = models.CharField(max_length=10, null=True, blank=True, default='')
+    full_name = models.CharField(max_length=255, null=True, blank=True, default='')
+    phone_number = models.CharField(max_length=11, null=True, blank=True, default='')
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
