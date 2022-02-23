@@ -76,3 +76,20 @@ def set_refund(sender, instance, *args, **kwargs):
     else:
         pass
 
+
+@receiver(post_save, sender=OrderItems)
+def set_quntity(sender, instance, *args, **kwargs):
+    """
+    this method
+    If they buy products from the threat of buying
+    that product, the total number in the warehouse will be reduced
+    """
+    value_of_product = instance.product.quantity
+    value_of_product -= instance.quantity
+    if value_of_product >= 0:
+        instance.product.quantity = value_of_product
+        instance.product.save()
+    elif value_of_product < 0:
+        instance.product.quantity = 0
+        instance.product.save()
+    
