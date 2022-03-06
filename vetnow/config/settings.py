@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'corsheaders',
     'drf_yasg',
+    'azbankgateways',
 ]
 
 MIDDLEWARE = [
@@ -148,5 +149,24 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full'
     }
+}
+
+#gate way settings
+
+AZ_IRANIAN_BANK_GATEWAYS = {
+   'GATEWAYS': {
+       'ZARINPAL': {
+           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+       },
+   },
+   'IS_SAMPLE_FORM_ENABLE': True,
+   'DEFAULT': 'BMI',
+   'CURRENCY': 'IRR',
+   'TRACKING_CODE_QUERY_PARAM': 'tc',
+   'TRACKING_CODE_LENGTH': 16, 
+   'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader',
+   'BANK_PRIORITIES': [
+       'ZARINPAL'
+   ],
 }
 
