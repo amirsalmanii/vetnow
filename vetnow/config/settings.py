@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'discount.apps.DiscountConfig',
     'mark.apps.MarkConfig',
+    'payment.apps.PaymentConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'corsheaders',
     'drf_yasg',
+    'azbankgateways',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +152,23 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+
+
+#gateway config
+
+AZ_IRANIAN_BANK_GATEWAYS = {
+   'GATEWAYS': {
+       'ZARINPAL': {
+           'MERCHANT_CODE': secret.m_id_zarinpal,
+       },
+   },
+   'IS_SAMPLE_FORM_ENABLE': True,
+   'DEFAULT': 'BMI',
+   'CURRENCY': 'IRR', 
+   'TRACKING_CODE_QUERY_PARAM': 'tc', 
+   'TRACKING_CODE_LENGTH': 16, 
+   'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', 
+   'BANK_PRIORITIES': [
+        'ZARINPAL'
+   ],
+}

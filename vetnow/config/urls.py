@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
 
+admin.autodiscover()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,6 +18,7 @@ urlpatterns = [
     path('api/v1/', include('news.urls')),
     path('api/v1/', include('mark.urls')),
     path('api/v1/', include('otp.urls')),
+    path('', include('payment.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
