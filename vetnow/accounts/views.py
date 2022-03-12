@@ -12,10 +12,12 @@ from .models import User
 from rest_framework.pagination import PageNumberPagination
 from ip2geotools.databases.noncommercial import DbIpCity
 from accounts.models import IpTables
+from rest_framework import filters
+
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 2
 
 
 class UserVerifyAndOtp(APIView):
@@ -99,10 +101,12 @@ class UserUpdateView(APIView):
 
 
 class UserListView(ListAPIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser,) 
     queryset = User.objects.all()
     serializer_class = serializers.UserListSerializer
     pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'first_name', 'last_name', 'national_code']
     
 
 class UserCreateView(CreateAPIView):
