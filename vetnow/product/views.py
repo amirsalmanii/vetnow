@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAdminUser
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 15
+    page_size = 2
 
 
 class CategoriesWithPaginationView(ListAPIView):
@@ -18,6 +18,8 @@ class CategoriesWithPaginationView(ListAPIView):
     serializer_class = serializers.CategoriesSerializer
     pagination_class = MyPagination
     # permission_classes = (permissions.AdminOrEmployee,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 
 class CategoriesListView(ListAPIView):
