@@ -7,14 +7,17 @@ from . import serializers
 from .models import News
 from accounts.serializers import UserListSerializer
 from accounts.views import MyPagination
+from rest_framework import filters
 
 User = get_user_model()
 
 
-class NewsListView(ListAPIView):
+class NewsListView(ListAPIView): 
     queryset = News.objects.all()
     serializer_class = serializers.NewsSerializer
     pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'body']
 
 
 class LastThreeNewsListView(APIView):
