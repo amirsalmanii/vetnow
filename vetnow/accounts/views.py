@@ -28,13 +28,14 @@ class UserVerifyAndOtp(APIView):
             otp_obj = UserOtp.objects.save_data_otp(data)
             try:
                 api = KavenegarAPI(secret.K_API_KEY)
-                msg = str(otp_obj.password) + '----کد را برای احراز هویت وارد کنید----'
+                msg = str(otp_obj.password)
                 params = {
-                    'sender': '',  # optional
                     'receptor': otp_obj.phone_number,
-                    'message': msg,
-                }
-                response = api.sms_send(params)
+                    'template': 'verifyvetnow',
+                    'token': msg,
+                    'type': 'sms',
+                }   
+                response = api.verify_lookup(params)
             except APIException as e:
                 pass
             except HTTPException as e:
