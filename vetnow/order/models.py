@@ -29,6 +29,9 @@ class Order(models.Model):
     def __str__(self):
         return f'{str(self.owner)}'
 
+    class Meta:
+        ordering = ['-id']
+
 
 class OrderItems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_item')
