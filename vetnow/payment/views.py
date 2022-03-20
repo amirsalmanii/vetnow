@@ -1,10 +1,12 @@
 import logging
+from django.shortcuts import redirect
 from django.urls import reverse
 from azbankgateways import bankfactories, models as bank_models, default_settings as settings
 from azbankgateways.exceptions import AZBankGatewaysException
 from django.http import HttpResponse, Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from . import serializers
 
 
 class GoToGateWay(APIView):
@@ -46,6 +48,27 @@ class VerifyFromGateWay(APIView):
             raise Http404
 
         if bank_record.is_success:
-            return HttpResponse("ﭖﺭﺩﺎﺨﺗ ﺏﺍ ﻡﻮﻔﻘﯿﺗ ﺎﻨﺟﺎﻣ ﺵﺩ.")
+            return redirect(f'http://45.159.113.83:3010/payments/successful?tc={tracking_code}')
+            # return HttpResponse("ﭖﺭﺩﺎﺨﺗ ﺏﺍ ﻡﻮﻔﻘﯿﺗ ﺎﻨﺟﺎﻣ ﺵﺩ.")
+        
 
-        return HttpResponse("ﭖﺭﺩﺎﺨﺗ ﺏﺍ ﺶﮑﺴﺗ ﻡﻭﺎﺠﻫ ﺵﺪﻫ ﺎﺴﺗ. ﺎﮔﺭ ﭖﻮﻟ ﮏﻣ ﺵﺪﻫ ﺎﺴﺗ ﻅﺮﻓ ﻡﺪﺗ ۴۸ ﺱﺎﻌﺗ ﭖﻮﻟ ﺐﻫ ﺢﺳﺎﺑ ﺶﻣﺍ ﺏﺍﺰﺧﻭﺎﻫﺩ ﮓﺸﺗ.")
+        # وقتی در راه اشتباهی میشه و پول گم بشه در چهل و هشت ساعت برمیگرده یا انصراف زدن
+        return redirect(f'http://45.159.113.83:3010/payments/failed?tc={tracking_code}')
+
+
+class VerifyToSendCart(APIView):
+    def post(self, request):
+        serializer = serializers.VerifyToCartSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            try:
+                result = bank_models.Bank.objects.get(tracking_code=data['tracking_code'])
+            except:
+                return Response(False, status=400)
+            else:
+                if result.status == 'Complete':
+                    result.status = 'Expire verify payment' # means verifyed
+                    result.save()
+                    return Response(True, status=200)
+                return Response(False, status=400)
+        return Response(serializer.errors, status=400)
