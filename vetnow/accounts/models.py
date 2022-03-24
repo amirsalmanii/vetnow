@@ -74,6 +74,9 @@ class User(AbstractBaseUser):
             return format_html(f"<img src='{self.avatar.url}' width='80', height='70'>")
         except:
             return "no image"
+    
+    class Meta:
+        ordering = ('-id',)
 
 
 class IpTables(models.Model):

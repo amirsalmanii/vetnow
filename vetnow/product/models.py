@@ -20,6 +20,9 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True, allow_unicode=True, blank=True, null=True)
 
+    class Meta:
+        ordering = ('-id',)
+
     def __str__(self):
         return self.name
 
@@ -89,6 +92,7 @@ class Product(models.Model):
     pdf_file = models.FileField(upload_to='products/pdfs/', null=True, blank=True)
     descreption = RichTextUploadingField(null=True, blank=True)
     available = models.BooleanField(default=True)
+    hide = models.BooleanField(default=False)
     price = models.BigIntegerField(default=0)
     price_after_discount = models.BigIntegerField(default=0)
     company_price = models.BigIntegerField(default=0)
