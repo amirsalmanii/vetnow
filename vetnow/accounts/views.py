@@ -66,6 +66,18 @@ class UserConfirmOtp(APIView):
             return Response(serializer.errors, status=404)
 
 
+class UserDeleteView(APIView):
+    permission_classes = (IsAdminUser,)
+    def delete(self, request, pk):
+        try:
+            usr = User.objects.get(id=pk)
+        except:
+            return Response(status=404)
+        else:
+            usr.delete()
+            return Response(status=204)
+
+
 class UserRegisterView(APIView):
     def post(self, request):
         serializer = serializers.UserRegisterSerilizer(data=request.data)
