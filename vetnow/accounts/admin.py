@@ -51,6 +51,7 @@ class UserAdmin(BaseUserAdmin):
                     "zip_code",
                     "full_name",
                     "phone_number",
+                    "wallet",
                 )
             },
         ),
