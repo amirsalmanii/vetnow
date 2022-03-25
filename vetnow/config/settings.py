@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'discount.apps.DiscountConfig',
     'mark.apps.MarkConfig',
+    'payment.apps.PaymentConfig',
     # third party
     'rest_framework',
     'rest_framework.authtoken',
@@ -151,16 +152,27 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+<<<<<<< HEAD
 #gate way settings
+=======
+
+
+#gateway config
+>>>>>>> c68c5d5f86f2a266cc6ea9d467b14535e98669ad
 
 AZ_IRANIAN_BANK_GATEWAYS = {
    'GATEWAYS': {
        'ZARINPAL': {
+<<<<<<< HEAD
            'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+=======
+           'MERCHANT_CODE': secret.m_id_zarinpal,
+>>>>>>> c68c5d5f86f2a266cc6ea9d467b14535e98669ad
        },
    },
    'IS_SAMPLE_FORM_ENABLE': True,
    'DEFAULT': 'BMI',
+<<<<<<< HEAD
    'CURRENCY': 'IRR',
    'TRACKING_CODE_QUERY_PARAM': 'tc',
    'TRACKING_CODE_LENGTH': 16, 
@@ -170,3 +182,13 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    ],
 }
 
+=======
+   'CURRENCY': 'IRR', 
+   'TRACKING_CODE_QUERY_PARAM': 'tc', 
+   'TRACKING_CODE_LENGTH': 16, 
+   'SETTING_VALUE_READER_CLASS': 'azbankgateways.readers.DefaultReader', 
+   'BANK_PRIORITIES': [
+        'ZARINPAL'
+   ],
+}
+>>>>>>> c68c5d5f86f2a266cc6ea9d467b14535e98669ad
