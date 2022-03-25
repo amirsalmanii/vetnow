@@ -17,4 +17,5 @@ urlpatterns = [
     path('product/delete/<str:slug>/', views.ProductDelete.as_view(), name='product_delete'),
     path('product/update/<str:slug>/', views.ProductUpdate.as_view(), name='product_update'),
     path('dw/pdf/<int:pk>/', views.ProductPdfDownload.as_view(), name='pdf_dw'),
+    path('product/count/<int:pk>/<int:client_quantity>/', views.SayProductQuntity.as_view(), name='product_quntity'),
 ]
