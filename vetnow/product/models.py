@@ -107,6 +107,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def depository(self):
+        return self.quantity
+
     # make thumbnail from original image and save it.
     def save(self, *args, **kwargs):
         if not self.make_thumbnail():

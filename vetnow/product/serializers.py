@@ -63,7 +63,25 @@ class ProductsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['categories',
+        'is_fav',
+        'name',
+        'slug',
+        'image',
+        'image2',
+        'image3',
+        'thumbnail',
+        'pdf_file',
+        'descreption',
+        'available',
+        'hide',
+        'price',
+        'price_after_discount',
+        'company_price',
+        'manufacturer_company',
+        'quantity',
+        'depository',
+        ]     
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
