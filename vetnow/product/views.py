@@ -1,3 +1,5 @@
+import codecs
+from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,7 +12,7 @@ from rest_framework.permissions import IsAdminUser
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 15
+    page_size = 20
 
 
 class CategoriesWithPaginationView(ListAPIView):
@@ -18,6 +20,8 @@ class CategoriesWithPaginationView(ListAPIView):
     serializer_class = serializers.CategoriesSerializer
     pagination_class = MyPagination
     # permission_classes = (permissions.AdminOrEmployee,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 
 class CategoriesListView(ListAPIView):
@@ -69,7 +73,7 @@ class ProductsListPaginationView(ListAPIView):
         if it doesn't valid we send 0 in discount_after_price field (means we dont have any discunt)
         """
         now = timezone.now().date()
-        products = Product.objects.filter()
+        products = Product.objects.filter(hide=False)
         for pr in products:
             if pr.price_after_discount > 0:
                 if pr.pdiscount.all():
@@ -96,6 +100,20 @@ class ProductDetaiView(APIView):
         return Response(serializer.data)
 
 
+class ProductPdfDownload(APIView):
+    def get(self, request, pk):
+        try:
+            product = Product.objects.get(id=pk)
+        except:
+            pass
+        else:
+            pdf = product.pdf_file.path
+            with codecs.open(pdf, 'r', encoding='utf-8', errors='ignore') as file:
+                response = HttpResponse(file, content_type='text/pdf')
+                response['Content-Disposition'] = 'attachment; filename=file.pdf'
+                return response
+
+
 class ProductsListView(ListAPIView):
     queryset = Product.objects.filter()
     serializer_class = serializers.ProductsSerializer
@@ -108,7 +126,7 @@ class ProductByCategory(ListAPIView):
         ##############################################################
         # check discount validation
         now = timezone.now().date()
-        products = Product.objects.filter()
+        products = Product.objects.filter(hide=False)
         for pr in products:
             if pr.price_after_discount > 0:
                 if pr.pdiscount.all():
@@ -139,7 +157,7 @@ class ProductDelete(APIView):
     def delete(self, request, slug):
         product = Product.objects.is_exist_product(slug)
         if product:
-            product.available = False
+            product.hide = True
             product.save()
             return Response(status=204)
         else:

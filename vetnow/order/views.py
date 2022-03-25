@@ -15,7 +15,7 @@ User = get_user_model()
 
 
 class MyPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 20
 
 
 class OrdersView(ListAPIView):

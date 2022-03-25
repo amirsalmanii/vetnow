@@ -12,6 +12,8 @@ from .models import User
 from rest_framework.pagination import PageNumberPagination
 from ip2geotools.databases.noncommercial import DbIpCity
 from accounts.models import IpTables
+from rest_framework import filters
+
 
 
 class MyPagination(PageNumberPagination):
@@ -26,13 +28,14 @@ class UserVerifyAndOtp(APIView):
             otp_obj = UserOtp.objects.save_data_otp(data)
             try:
                 api = KavenegarAPI(secret.K_API_KEY)
-                msg = str(otp_obj.password) + '----کد را برای احراز هویت وارد کنید----'
+                msg = str(otp_obj.password)
                 params = {
-                    'sender': '',  # optional
                     'receptor': otp_obj.phone_number,
-                    'message': msg,
-                }
-                response = api.sms_send(params)
+                    'template': 'verifyvetnow',
+                    'token': msg,
+                    'type': 'sms',
+                }   
+                response = api.verify_lookup(params)
             except APIException as e:
                 pass
             except HTTPException as e:
@@ -61,6 +64,18 @@ class UserConfirmOtp(APIView):
             return Response({"token": token.key, 'admin': admin}, status=200)
         else:
             return Response(serializer.errors, status=404)
+
+
+class UserDeleteView(APIView):
+    permission_classes = (IsAdminUser,)
+    def delete(self, request, pk):
+        try:
+            usr = User.objects.get(id=pk)
+        except:
+            return Response(status=404)
+        else:
+            usr.delete()
+            return Response(status=204)
 
 
 class UserRegisterView(APIView):
@@ -99,10 +114,12 @@ class UserUpdateView(APIView):
 
 
 class UserListView(ListAPIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser,) 
     queryset = User.objects.all()
     serializer_class = serializers.UserListSerializer
     pagination_class = MyPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'first_name', 'last_name', 'national_code']
     
 
 class UserCreateView(CreateAPIView):
