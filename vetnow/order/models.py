@@ -5,6 +5,8 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 from product.models import Product
+from config import secret
+from kavenegar import *
 
 User = settings.AUTH_USER_MODEL
 
@@ -57,6 +59,24 @@ def set_amount(sender, instance, *args, **kwargs):
         instance.payment_date = now()
 
     # TODO if going to cancelled and ... what we do with amount
+
+
+@receiver(post_save, sender=Order)
+def set_amount(sender, instance, *args, **kwargs):
+    try:
+        api = KavenegarAPI(secret.K_API_KEY)
+        msg = str(instance.order_id)
+        params = {
+            'receptor': instance.owner.username,
+            'template': 'vetnowaftershop',
+            'token': msg,
+            'type': 'sms',
+        }   
+        response = api.verify_lookup(params)
+    except APIException as e:
+        print(e)
+    except HTTPException as e:
+        print(e)
 
 
 class RefundOrdersRequest(models.Model):
