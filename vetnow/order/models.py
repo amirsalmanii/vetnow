@@ -74,9 +74,9 @@ def set_amount(sender, instance, *args, **kwargs):
         }   
         response = api.verify_lookup(params)
     except APIException as e:
-        print(e)
+        pass
     except HTTPException as e:
-        print(e)
+        pass
 
 
 class RefundOrdersRequest(models.Model):
