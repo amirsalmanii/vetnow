@@ -40,7 +40,7 @@ class OrderUpdateView(APIView):
             serializer2 = serializers.OrdersItemDetailsSerializer(order_items, many=True)
             return Response({"data1": serializer.data, "data2": serializer2.data})
 
-    def put(self, request, pk):
+    def put(self, request, pk, order_id):
         try:
             order = Order.objects.get(id=pk)
         except:
