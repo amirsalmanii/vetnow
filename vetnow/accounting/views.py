@@ -124,18 +124,18 @@ class ComputeGainPerMonthAutoView(APIView):
 
         return Response(
             {
-                "farvardin": {"amount__sum": 25000000},
-                "ordibehesht": {"amount__sum": 250000},
-                "khordad": {"amount__sum": 25000000},
-                "tir": {"amount__sum": 250000},
-                "mordad": {"amount__sum": 25000000},
-                "sharivar": {"amount__sum": 25000000},
-                "mehr": {"amount__sum": 20000000},
-                "aban": {"amount__sum": 30000000},
-                "azar": {"amount__sum": 3000000},
+                "farvardin": farvardin,
+                "ordibehesht": ordibehesht,
+                "khordad": khordad,
+                "tir": tir,
+                "mordad": mordad,
+                "sharivar": sharivar,
+                "mehr": mehr,
+                "aban": aban,
+                "azar": azar,
                 "dey": dey,
                 "bahman": bahman,
-                "esfand": {"amount__sum": 30000000},
+                "esfand": esfand
             },
             status=200,
         )  # TODO change this datas this is just for test
