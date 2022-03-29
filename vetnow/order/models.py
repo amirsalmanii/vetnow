@@ -63,20 +63,25 @@ def set_amount(sender, instance, *args, **kwargs):
 
 @receiver(post_save, sender=Order)
 def set_amount(sender, instance, *args, **kwargs):
-    try:
-        api = KavenegarAPI(secret.K_API_KEY)
-        msg = str(instance.order_id)
-        params = {
-            'receptor': instance.owner.username,
-            'template': 'vetnowaftershop',
-            'token': msg,
-            'type': 'sms',
-        }   
-        response = api.verify_lookup(params)
-    except APIException as e:
+    if instance.confirmation == True:
         pass
-    except HTTPException as e:
+    elif instance.payment_status == 'r':
         pass
+    else: # when buying and order saved
+        try:
+            api = KavenegarAPI(secret.K_API_KEY)
+            msg = str(instance.order_id)
+            params = {
+                'receptor': instance.owner.username,
+                'template': 'vetnowaftershop',
+                'token': msg,
+                'type': 'sms',
+            }   
+            response = api.verify_lookup(params)
+        except APIException as e:
+            pass
+        except HTTPException as e:
+            pass
 
 
 class RefundOrdersRequest(models.Model):
