@@ -89,3 +89,4 @@ db.sqlite3
 *media*
 vetnow/config/secret.py
 vetnow/*.idea*
+*static*
