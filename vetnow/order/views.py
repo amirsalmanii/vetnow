@@ -84,6 +84,16 @@ class OrdersStatusCountView(APIView):
         return Response({"refunds_count": orders_refund_counts, 'pending_orders': orders_pending_ounts}, status=200)
 
 
+class RefundCreateView(APIView):
+    def post(self, request):
+        serializer = serializers.OrderRefundsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(status=200)
+        return Response(serializer.errors, status=400)
+        
+
+
 class RefundsOrdersRequestView(ListAPIView):
     queryset = RefundOrdersRequest.objects.all()
     serializer_class = serializers.OrderRefundsSerializer
