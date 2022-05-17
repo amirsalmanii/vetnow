@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'azbankgateways',
     'sslserver',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -193,3 +194,7 @@ AZ_IRANIAN_BANK_GATEWAYS = {
    ],
 }
 >>>>>>> c68c5d5f86f2a266cc6ea9d467b14535e98669ad
+
+CRONJOBS = [
+    ('1 0 * * *', 'discount.cron.my_scheduled_job')
+]
