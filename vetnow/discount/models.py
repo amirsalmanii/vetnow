@@ -17,17 +17,6 @@ class Discount(models.Model):
         ordering = ('-created_at',)
 
 
-# this is when first time created obj
-@receiver(m2m_changed, sender=Discount.products.through)
-def update_discount_price_in_products(sender, instance, action, reverse, *args,  **kwargs):
-    if action == 'post_add':
-        products = instance.products.all()
-        percent = instance.discount_percent
-        for pr in products:
-            pr.price_after_discount = pr.price - (1 / 100) * percent * pr.price
-            pr.save()
-
-
 # when save instance we convert shamsi to milady
 @receiver(pre_save, sender=Discount)
 def update_date(sender, instance, *args, **kwargs):
@@ -39,16 +28,6 @@ def update_date(sender, instance, *args, **kwargs):
     instance.valid_from = valid_from_
     instance.valid_to = valid_to_
 
-# this is when updated obj
-@receiver(post_save, sender=Discount)
-def update_discount_price_in_products(sender, instance, *args,  **kwargs):
-    products = instance.products.all()
-    percent = instance.discount_percent
-    for pr in products:
-        pr.price_after_discount = pr.price - (1 / 100) * percent * pr.price
-        pr.save()
-  # TODO what we can if active false
-
 
 @receiver(pre_delete, sender=Discount)
 def update_discount_price_in_products(sender, instance, *args,  **kwargs):
@@ -56,5 +35,3 @@ def update_discount_price_in_products(sender, instance, *args,  **kwargs):
     for pr in products:
         pr.price_after_discount = 0
         pr.save()
-
-

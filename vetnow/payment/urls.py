@@ -7,9 +7,13 @@ urlpatterns = (
     # buying payments
     path('goto_gateway/', views.GoToGateWay.as_view()),
     path('callback-gateway/', views.VerifyFromGateWay.as_view(), name='call_back_gt'),
-    # wallet payments
+    # wallet paymentsGoToGateWayVisiting
     path('goto_gateway-wallet/', views.GoToGateWayWallet.as_view()),
     path('callback-gateway-wallet/<str:usr>/<int:amount>/', views.VerifyFromGateWayWallet.as_view(), name='call_back_gt_wallet'),
+    # pay for visiting doc
+    path('goto_gateway-visiting/', views.GoToGateWayVisiting.as_view()),
+    path('callback-gateway-visiting/', views.VerifyFromGateWayVisiting.as_view(), name='call_back_gt_visiting'),
+
     path('verify_for_cart/', views.VerifyToSendCart.as_view(), name='verify_for_cart'),
     path('api/v1/buying_w_wallet/', views.BuyingWithWallet.as_view(), name='buying_wallet'),
     path('api/v1/update_wallet/', views.UpdateUserWalletAfterBuying.as_view(), name='update_wallet_after_buying'),

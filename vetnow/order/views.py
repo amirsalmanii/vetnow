@@ -40,7 +40,7 @@ class OrderUpdateView(APIView):
             serializer2 = serializers.OrdersItemDetailsSerializer(order_items, many=True)
             return Response({"data1": serializer.data, "data2": serializer2.data})
 
-    def put(self, request, pk):
+    def put(self, request, pk, order_id):
         try:
             order = Order.objects.get(id=pk)
         except:
@@ -82,6 +82,16 @@ class OrdersStatusCountView(APIView):
         orders_refund_counts = Order.objects.filter(payment_status='r').count()
         orders_pending_ounts = Order.objects.filter(payment_status='p', confirmation=False).count()
         return Response({"refunds_count": orders_refund_counts, 'pending_orders': orders_pending_ounts}, status=200)
+
+
+class RefundCreateView(APIView):
+    def post(self, request):
+        serializer = serializers.OrderRefundsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(status=200)
+        return Response(serializer.errors, status=400)
+        
 
 
 class RefundsOrdersRequestView(ListAPIView):

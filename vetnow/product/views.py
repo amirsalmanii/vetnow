@@ -175,3 +175,17 @@ class ProductCreate(CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductUpdateSerializer
     permission_classes = (IsAdminUser,)
+
+
+class SayProductQuntity(APIView):
+    def get(self, request, pk, client_quantity):
+        try:
+            product = Product.objects.get(id=pk)
+        except:
+            return Response(status=404)
+        else:
+            quantity_product = product.quantity #10
+            result = quantity_product - client_quantity
+            if result >= 0:
+                return Response(status=200)
+            return Response({f'{product.name}: تعداد خواسته شده شما بیشتر از موجودی انبار است تعداد را چک کنید'}, status=400)

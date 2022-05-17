@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import Mark
-from product.serializers import ProductUpdateSerializer
+from product.serializers import ProductsSerializer
 
 
 class MarkProductsSerializer(serializers.ModelSerializer):
-    product = ProductUpdateSerializer()
+    product = ProductsSerializer()
 
     class Meta:
         model = Mark
