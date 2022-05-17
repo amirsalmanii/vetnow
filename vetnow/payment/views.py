@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-
-# Create your views here.
-=======
 import logging
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -186,10 +181,9 @@ class BuyingWithWallet(APIView):
         return Response(request.user.wallet, status=200)
 
 
-<<<<<<< HEAD
+
         return HttpResponse("ﭖﺭﺩﺎﺨﺗ ﺏﺍ ﺶﮑﺴﺗ ﻡﻭﺎﺠﻫ ﺵﺪﻫ ﺎﺴﺗ. ﺎﮔﺭ ﭖﻮﻟ ﮏﻣ ﺵﺪﻫ ﺎﺴﺗ ﻅﺮﻓ ﻡﺪﺗ ۴۸ ﺱﺎﻌﺗ ﭖﻮﻟ ﺐﻫ ﺢﺳﺎﺑ ﺶﻣﺍ ﺏﺍﺰﺧﻭﺎﻫﺩ ﮓﺸﺗ.")
->>>>>>> c68c5d5f86f2a266cc6ea9d467b14535e98669ad
-=======
+
 class UpdateUserWalletAfterBuying(APIView):
     def post(self, request):
         '''
@@ -203,5 +197,3 @@ class UpdateUserWalletAfterBuying(APIView):
             user.save()
             return Response(status=200)
         return Response(serializer.errors, status=400)
-            
->>>>>>> 361ae0153b3dc521d7f398ec7675d82b3a5916e7
