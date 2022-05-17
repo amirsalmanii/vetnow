@@ -13,12 +13,6 @@ class DiscountListView(ListAPIView):
     pagination_class = MyPagination
 
 
-# class DiscountCreateView(CreateAPIView):
-#     queryset = Discount.objects.all()
-#     serializer_class = serializers.DiscountCreateSerializer
-#     pagination_class = MyPagination
-
-
 class DiscountCreateView(APIView):
     def post(self, request):
         serializer = serializers.DiscountCreateSerializer(data=request.data)
@@ -33,7 +27,6 @@ class DiscountCreateView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-
 
 
 class DiscountUpdateView(APIView):
