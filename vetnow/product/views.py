@@ -102,7 +102,9 @@ class ProductByCategory(ListAPIView):
     serializer_class = serializers.ProductsSerializer
 
     def get_queryset(self):
-        products = Product.objects.filter(hide=False)
+        slug = self.kwargs['slug']
+        category = Category.objects.filter(slug=slug).first()
+        products = category.products.all()
         return products
 
 
