@@ -66,28 +66,7 @@ class ProductsListPaginationView(ListAPIView):
     search_fields = ['name', 'descreption']
 
     def get_queryset(self):
-        """
-        this functin return list of products
-        but
-        in this way we check discount time is valid if valid we send with product list
-        if it doesn't valid we send 0 in discount_after_price field (means we dont have any discunt)
-        """
-        now = timezone.now().date()
         products = Product.objects.filter(hide=False)
-        for pr in products:
-            if pr.price_after_discount > 0:
-                if pr.pdiscount.all():
-                    # means we have discount object in discount model
-                    for discount in pr.pdiscount.all():
-                        # check discount date is valid
-                        if discount.valid_to < now:
-                            pr.price_after_discount = 0
-                            pr.save()
-                else:
-                    # means if this product dont have any discount object
-                    # we can set value to 0
-                    pr.price_after_discount = 0
-                    pr.save()
         return products
 
 
@@ -123,31 +102,7 @@ class ProductByCategory(ListAPIView):
     serializer_class = serializers.ProductsSerializer
 
     def get_queryset(self):
-        ##############################################################
-        # check discount validation
-        now = timezone.now().date()
         products = Product.objects.filter(hide=False)
-        for pr in products:
-            if pr.price_after_discount > 0:
-                if pr.pdiscount.all():
-                    # means we have discount object in discount model
-                    for discount in pr.pdiscount.all():
-                        # check discount date is valid
-                        if discount.valid_to < now:
-                            pr.price_after_discount = 0
-                            pr.save()
-                else:
-                    # means if this product dont have any discount object
-                    # we can set value to 0
-                    pr.price_after_discount = 0
-                    pr.save()
-        ##############################################################
-        slug = self.kwargs['slug']
-        try:
-            category = Category.objects.filter(slug=slug).first()
-            products = category.products.all()
-        except:
-            return None
         return products
 
 
